@@ -25,19 +25,40 @@ Zuerst lesen nach Rückkehr. Stichpunkte, Stand dieses Laufs.
 - **Tracking**: `DECISIONS.md`, `ROADMAP_STATUS.md`, diese Datei.
 - Alle Zwischenschritte einzeln committet (kein Big-Bang).
 
+## Fertig (Lauf Phase 4–6, getestet)
+
+- **Phase 4 – Debug/Analytics**: `agents/root-cause.md` (2. Ursache erzwungen),
+  `skills/debug-mode`, `skills/data-analytics-mode`. (Markdown-Agenten/Skills,
+  kein Laufzeittest nötig.)
+- **Phase 5 – Fleet read-only**: `bin/fleet_discover.py`, `custos/fleet.yaml`,
+  `skills/fleet-mode`. → Test in Temp: custos=aktiv-ueberwacht,
+  fakerepo=nur-inventarisiert, `node_modules`-Sub-Repo geprunt (1 statt 2),
+  Re-Run idempotent (0 new) ✓. Schreibt nie in gefundene Repos.
+- **Phase 6 – Security passiv**: `bin/security_passive.py`, `custos/scope.yaml`
+  (leer=kein aktiver Scan), `skills/security-mode`. → Test Windows: 4 Checks
+  liefen (Defender/Ports/Autostart/winget), alle ok, Report in
+  `custos_findings.json` ✓. Aktive Scans (15.4) nicht gebaut.
+
 ## Beweislage (Selbstanwendung)
 
-Alle vier Gates wurden mit realen stdin-Payloads ausgeführt; grün/rot-Verhalten
-wie oben dokumentiert. Kein Gate nur behauptet – jedes ausgeführt.
+Alle Gates/Tools mit realen Eingaben ausgeführt; Verhalten wie oben dokumentiert.
+Kein Baustein nur behauptet – jeder ausgeführt.
 
 ## Läuft gerade
 
-- Nichts offen in diesem Lauf. Scope (Phase 1–3) abgeschlossen.
+- Nichts offen. Scope (Phase 4–6) abgeschlossen.
 
 ## Noch offen (nächster Lauf)
 
-Siehe `ROADMAP_STATUS.md`. Kern: restliche Agenten/Skills/Detektoren + Gates aus
-Abschnitt 8, Phasen 4–11, Zero-Tolerance-Härtung, CI-Dogfooding.
+Siehe `ROADMAP_STATUS.md`. Kern: Phase 7–11 (Fleet-Bearbeitung/Auto-Fix-PRs,
+Council, Multi-Session, Interface, Selbstqualifizierung), restliche
+Agenten/Skills/Detektoren + Gates aus Abschnitt 8, Fleet-GitHub-Discovery
+(`gh repo list`), Zero-Tolerance-Härtung, CI-Dogfooding.
+
+## ENTSCHEIDUNG NÖTIG (Platzhalter im Code)
+
+- `roots:` in `custos/fleet.yaml` – echte Scan-Wurzelverzeichnisse (aktuell leer).
+- Hosts/Repos in `custos/scope.yaml` – echte, scan-erlaubte Assets (aktuell leer).
 
 ## Entscheidungen getroffen (Abschnitt 20, vom User)
 

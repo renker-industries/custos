@@ -31,6 +31,34 @@ final entschieden).
 - **`custos_findings.json` und `custos.config.json` in `.gitignore`** – Runtime-
   Artefakte bzw. lokale Konfiguration, nicht Quellcode.
 
+## Lauf Phase 4–6 (autonom entschieden)
+
+- **Fleet-/Scope-Configs = echtes YAML via PyYAML** (`custos/fleet.yaml`,
+  `custos/scope.yaml`) – Konzept nennt diese Dateien explizit `.yaml`; die
+  CLI-Tools sind manuell laufende Skripte (keine Hooks), daher ist eine PyYAML-
+  Abhängigkeit dort vertretbar; fehlt PyYAML, brechen sie mit klarem Install-
+  Hinweis ab statt zu raten.
+- **Fleet-Discovery ist read-only**: schreibt nur `custos/fleet.yaml`, nie in
+  ein gefundenes Repo; bestehende Status bleiben bei Re-Run erhalten; neue Funde
+  = `nur-inventarisiert`; `custos` selbst = `aktiv-ueberwacht`.
+- **Discovery-Prune**: `node_modules`, `venv`, `.venv`, `__pycache__`,
+  `site-packages` werden übersprungen und in gefundene Repos wird nicht
+  hineinabgestiegen (kein doppeltes Erfassen von Sub-Repos).
+- **`scope.yaml` startet leer** – leer = kein aktiver Scan erlaubt (fail-closed
+  für spätere aktive Scans).
+- **Passive Security-Checks nur lokal/beobachtend**, OS-abhängig; fehlendes
+  Werkzeug = `skipped` (nie als „ok" gewertet); dieselbe `custos_findings.json`
+  als Log wie die Code-Gates.
+- **Root-Cause- und Plan-Reviewer-Agent auf `model: opus`** gesetzt (Konzept
+  Abschnitt 13: hoher Effort für Debug-Kausalanalyse und Plan-Freigabe).
+
+## ENTSCHEIDUNG NÖTIG (Platzhalter im Code, echte Werte fehlen)
+
+- **Repo-Discovery-Wurzelverzeichnisse** (`roots:` in `custos/fleet.yaml`):
+  aktuell leer/Platzhalter – welche echten Ordner sollen gescannt werden?
+- **Scope-Hosts/IPs/Repos** (`custos/scope.yaml`): aktuell leer – welche eigenen,
+  scan-erlaubten Assets gehören hinein, bevor ein aktiver Scan aktiviert wird?
+
 ## Erledigt (vom User entschieden, Abschnitt 20)
 
 - [x] **Lizenz = MIT**, Copyright (c) 2026 Renker Industries. Umgesetzt in
