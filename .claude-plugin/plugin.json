@@ -1,0 +1,20 @@
+{
+  "name": "custos",
+  "version": "0.1.0",
+  "description": "CUSTOS ist der Waechter, der jede Behauptung deines KI-Agenten in einen Beweis verwandelt - bevor Code, Repo oder Server sich fertig nennen duerfen.",
+  "author": {
+    "name": "Renker Industries",
+    "email": "sebastian.renker3@gmail.com"
+  },
+  "homepage": "https://github.com/renker-industries/custos",
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": [
+    "claude-code",
+    "guardrail",
+    "hooks",
+    "static-analysis",
+    "quality-gate",
+    "proof-based"
+  ],
+  "hooks": "./hooks/hooks.json"
+}
