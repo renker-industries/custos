@@ -1,0 +1,20 @@
+# CUSTOS fleet inventory (read-only discovery, concept section 10).
+#
+# 'roots' = directories that `python bin/fleet_discover.py` scans for git repos.
+# ENTSCHEIDUNG NOETIG: fill in the real root directories to scan (placeholder
+# below). Discovery never writes into a discovered repo; it only records it here.
+#
+# status: aktiv-ueberwacht | nur-inventarisiert | ignoriert
+# New finds default to nur-inventarisiert. Only custos itself starts as
+# aktiv-ueberwacht (decided, see DECISIONS.md). Auto-fix/PRs for released repos
+# are a later, opt-in phase (10.3) and are NOT part of this read-only stage.
+
+roots: []
+# Example (uncomment and adjust to your machine):
+# roots:
+#   - C:\Users\Sebas\Documents
+
+repos:
+  - name: custos
+    path: .
+    status: aktiv-ueberwacht
