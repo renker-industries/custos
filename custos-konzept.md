@@ -312,9 +312,11 @@ Festgelegter Stil: dunkles Terminal-Dashboard (Farben/Typografie siehe Abschnitt
 
 Entschieden (15.09.2026): Lizenz = MIT (Abschnitt 17), GitHub-Org `renker-industries` wird neu angelegt (Abschnitt 3), Fleet-Modus startet mit **nur `custos` selbst** als „aktiv überwacht" (Abschnitt 10.2) – alle anderen Repos bleiben erstmal nur inventarisiert, bis einzeln freigegeben.
 
+Entschieden (15.09.2026): Fleet-Discovery durchsucht `CascadeProjects` und `Documents` als Wurzelverzeichnisse (Abschnitt 10.1).
+
 Noch offen:
 
-- Welche Wurzelverzeichnisse auf dem PC soll die lokale Repo-Discovery (Abschnitt 10.1) überhaupt durchsuchen?
+- `scope.yaml` bleibt bewusst leer (kein aktiver Scan), bis echte Hosts/IPs eingetragen werden – keine Deadline dafür.
 - Wann und welches zweite Repo (vermutlich RenkerNet oder RENCORA/LOKARA) wird als nächstes für den Fleet-Modus freigegeben?
 - Wie groß soll die Referenz-Testsuite für Regressionsläufe initial sein, und aus welchen eigenen Projekten wird sie gespeist?
 - Soll der Task-Queue-Mechanismus über eine Datei im Repo oder einen lokalen MCP-Server laufen?
