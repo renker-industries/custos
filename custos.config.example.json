@@ -1,5 +1,6 @@
 {
   "proofCommand": "pytest -q",
   "slopThreshold": 5,
-  "_comment": "Copy to custos.config.json. proofCommand is run by the Stop gate; the session may not end unless it exits 0. If omitted, the gate auto-detects pytest or an npm test script. CUSTOS itself uses 'python bin/selfqual.py' as its proofCommand (dogfooding). slopThreshold maps to CUSTOS_SLOP_THRESHOLD for the ai-slop detector."
+  "zeroTolerance": false,
+  "_comment": "Copy to custos.config.json. proofCommand is run by the Stop gate; the session may not end unless it exits 0. If omitted, the gate auto-detects pytest or an npm test script. CUSTOS itself uses 'python bin/selfqual.py' as its proofCommand (dogfooding). slopThreshold maps to CUSTOS_SLOP_THRESHOLD for the ai-slop detector. zeroTolerance (or env CUSTOS_ZERO_TOLERANCE=1) makes the gates fail-closed (concept section 16): block on any single finding and treat a missing linter as a failure, not a skip."
 }

@@ -63,6 +63,17 @@ class LintTests(unittest.TestCase):
             p = {"cwd": d, "tool_input": {"file_path": f}}
             self.assertEqual(run(self.S, p).returncode, 2)
 
+    @unittest.skipIf(__import__("shutil").which("eslint"),
+                     "eslint installed: no-tool path not exercised")
+    def test_missing_js_linter_does_not_block(self):
+        # Regression: a missing/unlaunchable eslint (incl. Windows npx.cmd) must be
+        # a non-blocking notice, not a false lint failure, in default mode.
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "a.js"), "w", encoding="utf-8") as fh:
+                fh.write("var x = 1\n")
+            p = {"cwd": d, "tool_input": {"file_path": "a.js"}}
+            self.assertEqual(run(self.S, p).returncode, 0)
+
 
 class A11yTests(unittest.TestCase):
     S = "detectors/a11y_frontend_check.py"

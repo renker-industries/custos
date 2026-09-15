@@ -110,11 +110,12 @@ def main() -> int:
     summary = "; ".join(
         f"L{f['line']} {f['kind']}" for f in findings[:12]
     )
-    if len(findings) >= BLOCK_THRESHOLD:
+    threshold = 1 if cl.zero_tolerance(payload) else BLOCK_THRESHOLD
+    if len(findings) >= threshold:
         cl.record(payload, "ai_slop_detector", findings, blocked=True)
         cl.block(
             f"CUSTOS ai-slop gate BLOCKED {path}: {len(findings)} findings "
-            f"(threshold {BLOCK_THRESHOLD}). {summary}. "
+            f"(threshold {threshold}). {summary}. "
             f"Clean these up before continuing."
         )
         return 2  # not reached; cl.block exits

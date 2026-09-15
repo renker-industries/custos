@@ -53,6 +53,28 @@ def findings_path(payload: dict) -> str:
     return os.path.join(cwd, FINDINGS_FILE)
 
 
+def read_config(payload: dict) -> dict:
+    """Load custos.config.json from the repo root, or {}."""
+    cwd = payload.get("cwd") or os.getcwd()
+    path = os.path.join(cwd, "custos.config.json")
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as fh:
+                data = json.load(fh)
+            return data if isinstance(data, dict) else {}
+        except (OSError, json.JSONDecodeError):
+            return {}
+    return {}
+
+
+def zero_tolerance(payload: dict) -> bool:
+    """Zero-tolerance mode (concept section 16): block on any finding, fail-closed.
+    Enabled via env CUSTOS_ZERO_TOLERANCE=1 or "zeroTolerance": true in config."""
+    if os.environ.get("CUSTOS_ZERO_TOLERANCE") in ("1", "true", "True"):
+        return True
+    return bool(read_config(payload).get("zeroTolerance"))
+
+
 def record(payload: dict, detector: str, findings: list[dict], blocked: bool) -> None:
     """Append a detector run to custos_findings.json (create if missing)."""
     path = findings_path(payload)

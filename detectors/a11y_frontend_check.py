@@ -81,11 +81,12 @@ def main() -> int:
         return 0
 
     summary = "; ".join(f"L{f['line']} {f['kind']}" for f in findings[:12])
-    if len(findings) >= BLOCK_THRESHOLD:
+    threshold = 1 if cl.zero_tolerance(payload) else BLOCK_THRESHOLD
+    if len(findings) >= threshold:
         cl.record(payload, "a11y_frontend_check", findings, blocked=True)
         cl.block(
             f"CUSTOS a11y gate BLOCKED {path}: {len(findings)} accessibility "
-            f"issue(s) (threshold {BLOCK_THRESHOLD}). {summary}."
+            f"issue(s) (threshold {threshold}). {summary}."
         )
         return 2  # not reached
 

@@ -1,0 +1,30 @@
+name: CUSTOS self-qualification
+
+# Dogfooding CI (concept section 17): every push/PR runs the same proof
+# obligation CUSTOS imposes on other projects - its own gates against its own
+# fixtures. A red suite blocks the merge.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  selfqual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install pyyaml
+      - name: Self-qualification suite
+        run: python bin/selfqual.py
+      - name: Upload findings log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: custos-findings
+          path: custos_findings.json
+          if-no-files-found: ignore

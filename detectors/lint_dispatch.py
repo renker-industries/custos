@@ -51,13 +51,24 @@ def lint_python(path: str, cwd: str | None) -> tuple[int, str, str]:
 
 
 def lint_js(path: str, cwd: str | None) -> tuple[int, str, str]:
-    if shutil.which("eslint"):
-        code, out = _run(["eslint", path], cwd)
+    # Resolve the real executable path (on Windows this yields eslint.cmd / npx.cmd,
+    # which bare "eslint"/"npx" argv cannot launch via CreateProcess).
+    eslint = shutil.which("eslint")
+    if eslint:
+        code, out = _run([eslint, path], cwd)
+        if code == 1 and out.startswith("CUSTOS could not run"):
+            return -1, "eslint not runnable", "eslint"
         return code, out, "eslint"
-    if shutil.which("npx"):
-        code, out = _run(["npx", "--no-install", "eslint", path], cwd)
-        # npx --no-install returns non-zero if eslint absent; treat as "no tool".
-        if "could not determine executable" in out or "not found" in out.lower():
+    npx = shutil.which("npx")
+    if npx:
+        code, out = _run([npx, "--no-install", "eslint", path], cwd)
+        # Launch failure or eslint absent -> treat as "no tool", not a lint error.
+        low = out.lower()
+        if (out.startswith("CUSTOS could not run")
+                or "could not determine executable" in low
+                or "canceled due to missing packages" in low
+                or "npm error" in low and "eslint" in low
+                or "not found" in low):
             return -1, "eslint not installed", "eslint"
         return code, out, "eslint"
     return -1, "eslint not installed", "eslint"
@@ -82,7 +93,15 @@ def main() -> int:
         return 0  # no linter wired for this language yet
 
     if code == -1:
-        # Preferred linter missing -> non-blocking notice.
+        # Preferred linter missing. In zero-tolerance mode this is fail-closed
+        # (a gate you cannot run is not a gate you may skip); otherwise a notice.
+        if cl.zero_tolerance(payload):
+            cl.record(payload, f"lint_dispatch:{tool}",
+                      [{"kind": "linter-missing", "text": out}], blocked=True)
+            cl.block(
+                f"CUSTOS static-analysis gate BLOCKED {path}: {tool} not installed "
+                f"and zero-tolerance is on. Install {tool} to proceed."
+            )
         cl.record(
             payload,
             f"lint_dispatch:{tool}",

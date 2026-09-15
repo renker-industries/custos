@@ -70,6 +70,39 @@ def git_remote(path: str) -> str | None:
     return url or None
 
 
+def discover_github(account: str) -> list[dict]:
+    """List remote repos via `gh repo list` (read-only, concept 10.1). Returns
+    inventory entries; empty list if gh is unavailable or errors."""
+    if not shutil.which("gh"):
+        return []
+    try:
+        proc = subprocess.run(
+            ["gh", "repo", "list", account, "--limit", "200", "--json",
+             "name,visibility,defaultBranch,url,isFork"],
+            capture_output=True, text=True, timeout=60,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return []
+    if proc.returncode != 0:
+        return []
+    try:
+        import json as _json
+        repos = _json.loads(proc.stdout)
+    except ValueError:
+        return []
+    out = []
+    for r in repos:
+        out.append({
+            "name": r.get("name"),
+            "github": f"{account}/{r.get('name')}",
+            "visibility": r.get("visibility"),
+            "remote": r.get("url"),
+            # Forks default to ignoriert (do not touch third-party forks).
+            "status": IGNORED if r.get("isFork") else INVENTORY,
+        })
+    return out
+
+
 def discover(roots: list[str]) -> list[str]:
     """Return absolute paths of git repos under the given roots (repos not nested
     into each other: once a .git is found, that subtree is not descended)."""
@@ -110,16 +143,23 @@ def main() -> int:
     default_fleet = os.path.join(os.getcwd(), "custos", "fleet.yaml")
     ap.add_argument("--fleet", default=default_fleet)
     ap.add_argument("--root", action="append", default=[], dest="roots")
+    ap.add_argument("--github", default=None,
+                    help="GitHub account/org to inventory via gh repo list")
     args = ap.parse_args()
 
     fleet = load_fleet(args.fleet)
     roots = args.roots or fleet.get("roots") or []
 
-    # Index existing repos by absolute path to preserve their status on re-run.
+    # Index existing local repos by absolute path to preserve status on re-run,
+    # and remote-only entries by their github slug.
     existing: dict[str, dict] = {}
+    github_existing: dict[str, dict] = {}
     for entry in fleet.get("repos", []):
-        p = os.path.abspath(os.path.expanduser(entry.get("path", "")))
-        existing[p] = entry
+        if entry.get("path"):
+            p = os.path.abspath(os.path.expanduser(entry.get("path", "")))
+            existing[p] = entry
+        elif entry.get("github"):
+            github_existing[entry["github"]] = entry
 
     # Always keep the custos repo itself as actively monitored.
     self_root = repo_root_of(os.path.dirname(os.path.abspath(__file__)))
@@ -146,10 +186,21 @@ def main() -> int:
         existing[path] = entry
         added += 1
 
-    out = {
-        "roots": roots,
-        "repos": sorted(existing.values(), key=lambda e: e.get("path", "")),
-    }
+    github_account = args.github or fleet.get("github")
+    gh_added = 0
+    if github_account:
+        for entry in discover_github(github_account):
+            slug = entry["github"]
+            if slug in github_existing:
+                continue  # preserve existing status
+            github_existing[slug] = entry
+            gh_added += 1
+
+    repos = sorted(existing.values(), key=lambda e: e.get("path", ""))
+    repos += sorted(github_existing.values(), key=lambda e: e.get("github", ""))
+    out = {"roots": roots, "repos": repos}
+    if github_account:
+        out["github"] = github_account
     os.makedirs(os.path.dirname(args.fleet), exist_ok=True)
     with open(args.fleet, "w", encoding="utf-8") as fh:
         yaml.safe_dump(out, fh, allow_unicode=True, sort_keys=False)
@@ -160,7 +211,8 @@ def main() -> int:
     print(
         f"CUSTOS fleet: {len(out['repos'])} repo(s) "
         f"({active} aktiv-ueberwacht, {inv} nur-inventarisiert, {ign} ignoriert); "
-        f"{added} new; roots={roots or '[none configured]'} -> {args.fleet}"
+        f"{added} new local, {gh_added} new github; "
+        f"roots={roots or '[none configured]'} -> {args.fleet}"
     )
     if not roots:
         print(
