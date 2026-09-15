@@ -24,18 +24,34 @@ Vier Ebenen, jede auf einen realen Claude-Code-Baustein abgebildet:
 - **Beweise** – Ein `Stop`-Hook erzwingt einen Testlauf/Linter, bevor die Session
   enden darf. Kein grüner Exit-Code, kein Sessionende.
 
-### In diesem Stand enthalten (Roadmap-Phase 1–3)
+### Enthalten (Roadmap-Phase 1–11, Konzept vollständig umgesetzt)
 
-- `senior-dev` – Default-Agent (Haltung, Triage, Delegation)
-- `plan-reviewer` – prüft jeden Plan gegen Scope/Sicherheit/Vollständigkeit
-- **AI-Slop-Detektor** (`PostToolUse`) – findet Füllkommentare, generische Namen,
-  Duplikate, triviale Wrapper; ab Schwellwert blockierend
-- **Statik-Analyse-Dispatch** (`PostToolUse`) – Python (ruff/`py_compile`),
-  JS/TS (eslint), blockierend bei Lint-Fehlern
-- **Beweis-Gate** (`Stop`) – erzwingt und prüft ein Proof-Kommando
+**Agenten:** `senior-dev` (Default, Triage), `plan-reviewer`, `scope-guard`,
+`root-cause` (Debug-Kausalanalyse), `council-advisor` ×5 + `council-chair`,
+`plain-text-translator`.
+
+**Skills/Modi:** `grill-me`, `plan-mode`, `build-mode`, `debug-mode`,
+`cleanup-mode`, `data-analytics-mode`, `fleet-mode`, `security-mode`,
+`council-mode`, `multi-session`.
+
+**Gates (Hooks, Konzept Abschnitt 8):**
+- `UserPromptSubmit` – Trivial-Schranke (Triage-Reminder)
+- `PreToolUse ExitPlanMode` – Plan-Freigabe (blockt bis Plan-Reviewer freigibt)
+- `PreToolUse Write|Edit` – Scope-Wächter + DB-Schema-Guard
+- `PostToolUse` – AI-Slop-Detektor, Statik-Dispatch (ruff/`py_compile`, eslint),
+  Impact-Analyse, A11y-Check
+- `Stop` – Beweis-Gate (erzwingt grünen Proof-Lauf)
+- `SubagentStop` – Regressions-Wächter (blockt grün→rot)
+
+**Werkzeuge (`bin/`):** Fleet-Discovery (lokal + GitHub, read-only), Fleet-
+Auto-Fix (opt-in Branch+PR, dry-run default), passive Security-Checks, Council-
+Log, Multi-Session-Task-Queue, Dashboard-Generator, Selbstqualifizierung.
+
+**Zero-Tolerance-Modus** (Abschnitt 16): `CUSTOS_ZERO_TOLERANCE=1` bzw.
+`zeroTolerance: true` – fail-closed, blockt bei jedem einzelnen Fund.
 
 Alle Funde landen zeitgestempelt in `custos_findings.json` – ein Beleg, keine
-Behauptung.
+Behauptung. Dashboard: `python bin/build_dashboard.py` → `interface/`.
 
 ## Installation
 
@@ -57,12 +73,20 @@ automatisch.
 **Voraussetzung:** Python 3 auf dem PATH (die Detektoren sind plattform-
 unabhängig in Python geschrieben – keine WSL-Pflicht unter Windows).
 
+## Dogfooding
+
+CUSTOS wendet die eigenen Regeln auf sich selbst an: `python bin/selfqual.py`
+lässt die Referenz-Testsuite (`tests/`) laufen – dieselbe Beweispflicht, die
+CUSTOS für andere Projekte durchsetzt. CI (`.github/workflows/custos.yml`) macht
+das bei jedem Push/PR.
+
 ## Status
 
-Frühe Version (0.1.0). Umgesetzt ist der Kern „Beweis statt Behauptung"
-(Roadmap-Phase 1–3). Der weitere Funktionsumfang (Fleet-Modus, Security-Mode,
-Council, Multi-Session, Interface, Selbstqualifizierung) ist in
-[`ROADMAP_STATUS.md`](ROADMAP_STATUS.md) als offene Punkte dokumentiert.
+Version 0.2.0 – der Konzept-Funktionsumfang (Roadmap-Phase 1–11) ist umgesetzt.
+Bewusst als scharf-zu-schaltende Platzhalter belassen: aktive Security-Scans
+(nmap/ZAP, brauchen befüllte `custos/scope.yaml`) und Fleet-Auto-Fix-Push (opt-in
+pro Repo). Details und Feinschliff-Punkte in
+[`ROADMAP_STATUS.md`](ROADMAP_STATUS.md).
 
 ## Lizenz
 

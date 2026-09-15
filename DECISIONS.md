@@ -52,12 +52,37 @@ final entschieden).
 - **Root-Cause- und Plan-Reviewer-Agent auf `model: opus`** gesetzt (Konzept
   Abschnitt 13: hoher Effort für Debug-Kausalanalyse und Plan-Freigabe).
 
+## Lauf Phase 7–11 + Querschnitt (autonom entschieden)
+
+- **Workflow-State in `custos_state.json`** (gitignored) teilt Plan-Freigabe,
+  Scope und Test-Baseline zwischen den Hooks; Plan-Freigabe setzt die
+  `plan-reviewer`-Agent via `bin/custos_approve_plan.py`.
+- **Fleet-Auto-Fix fail-safe**: dry-run default, nur bei `status=aktiv-ueberwacht`
+  UND `autofix:true`, nie über unclean tree, nie direkt auf main; `--push` ist der
+  einzige Schritt, der die Maschine verlässt.
+- **Aktive Security-Scans (nmap/ZAP) bewusst NICHT gebaut** – erfordern befüllte,
+  freigegebene `scope.yaml`; nur passive Checks sind scharf.
+- **Council-Suppression erzwingt Zukunfts-Ablaufdatum** (kein permanenter,
+  stiller Ausnahme-Zustand, Abschnitt 16).
+- **Task-Queue: `complete` erfordert `--proof`** – eine Aufgabe gilt nicht per
+  Claim als erledigt (Beweispflicht auch hier).
+- **Interface = generierte, self-contained HTML** aus `custos_findings.json`
+  (Daten inline), damit sie ohne Server von Platte öffnet; Design nach Branding,
+  Feinschliff gegen die Design-Referenz später.
+- **Selbstqualifizierung via stdlib-`unittest`** (nicht pytest), damit die Suite
+  ohne Zusatz-Abhängigkeit überall läuft; `bin/selfqual.py` ist CUSTOS' eigener
+  proofCommand (Dogfooding).
+- **Zero-Tolerance schaltbar** per env/Config statt hart verdrahtet – Reibung nur
+  wenn bewusst gewollt.
+
 ## ENTSCHEIDUNG NÖTIG (Platzhalter im Code, echte Werte fehlen)
 
 - **Repo-Discovery-Wurzelverzeichnisse** (`roots:` in `custos/fleet.yaml`):
-  aktuell leer/Platzhalter – welche echten Ordner sollen gescannt werden?
+  ERLEDIGT – gesetzt auf `CascadeProjects` + `Documents`.
 - **Scope-Hosts/IPs/Repos** (`custos/scope.yaml`): aktuell leer – welche eigenen,
   scan-erlaubten Assets gehören hinein, bevor ein aktiver Scan aktiviert wird?
+- **Welche der inventarisierten Repos werden `aktiv-ueberwacht`** (und ggf.
+  `autofix:true`), bevor Fleet-Prüfung/Auto-Fix scharfgeschaltet wird?
 
 ## Erledigt (vom User entschieden, Abschnitt 20)
 

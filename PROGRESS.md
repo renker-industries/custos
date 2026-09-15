@@ -44,16 +44,37 @@ Zuerst lesen nach Rückkehr. Stichpunkte, Stand dieses Laufs.
 Alle Gates/Tools mit realen Eingaben ausgeführt; Verhalten wie oben dokumentiert.
 Kein Baustein nur behauptet – jeder ausgeführt.
 
+## Fertig (Lauf Phase 7–11 + Querschnitt, getestet)
+
+- **Alle Gates aus Abschnitt 8** verdrahtet + getestet: UserPromptSubmit-Triage,
+  Plan-Freigabe (`plan_gate`), Scope-Wächter (`scope_guard`), DB-Schema-Guard,
+  Impact-Analyse, A11y-Check, Regressions-Wächter (`regression_guard`). Grün/rot
+  je mit echten Payloads geprüft.
+- **Restliche Agenten/Skills** (scope-guard, council-advisor/-chair,
+  plain-text-translator; grill-me, plan-mode, build-mode, cleanup-mode,
+  council-mode, multi-session) – Frontmatter validiert (alle ok).
+- **Phase 7** `bin/fleet_fix.py`: dry-run default, opt-in, nie auf main. Getestet:
+  no-opt-in + dry-run lässt Ziel-Repo clean.
+- **Phase 8** `bin/council_log.py`: Suppression nur mit Zukunfts-Ablauf. Getestet.
+- **Phase 9** `bin/task_queue.py`: claim-Konflikt + proof-Pflicht. Getestet.
+- **Phase 10** `bin/build_dashboard.py`: 4 Ansichten, Branding-Palette. Mit
+  synthetischen + echten Daten getestet; Sample an User gesendet.
+- **Phase 11** `tests/` (16 Fälle) + `bin/selfqual.py`: **16/16 grün**,
+  Release-Metrik geloggt. CUSTOS eigener proofCommand.
+- **Querschnitt**: GitHub-Discovery (`--github`), Zero-Tolerance-Modus,
+  CI-Workflow, CODEX.md. Windows-Lint-Bug (npx.cmd) gefixt + Regressionstest.
+- Version → 0.2.0.
+
 ## Läuft gerade
 
-- Nichts offen. Scope (Phase 4–6) abgeschlossen.
+- Nichts offen. Konzept-Funktionsumfang (Phase 1–11) abgeschlossen.
 
-## Noch offen (nächster Lauf)
+## Noch offen (bewusst, scharf-zu-schaltend/irreversibel)
 
-Siehe `ROADMAP_STATUS.md`. Kern: Phase 7–11 (Fleet-Bearbeitung/Auto-Fix-PRs,
-Council, Multi-Session, Interface, Selbstqualifizierung), restliche
-Agenten/Skills/Detektoren + Gates aus Abschnitt 8, Fleet-GitHub-Discovery
-(`gh repo list`), Zero-Tolerance-Härtung, CI-Dogfooding.
+Siehe `ROADMAP_STATUS.md`. Kern: aktive Security-Scans (nmap/ZAP, brauchen
+befüllte scope.yaml), Fleet-Auto-Fix-Push scharfschalten (opt-in pro Repo),
+Codex-Event-Adapter, Interface-Feinschliff gegen Design-Referenz, GitHub-Org +
+Push (manuell durch User).
 
 ## Fleet roots gesetzt (2026-09-15)
 

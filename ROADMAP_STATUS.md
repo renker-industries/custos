@@ -1,6 +1,7 @@
 # ROADMAP STATUS
 
-Bezug: `custos-konzept.md` Abschnitt 19. Stand: Phase 1–6 erledigt.
+Bezug: `custos-konzept.md` Abschnitt 19. Stand: Phase 1–11 erledigt (Konzept
+vollständig umgesetzt); nur scharf-zu-schaltende/irreversible Teile bewusst offen.
 
 ## Erledigt (Lauf Phase 1–3)
 
@@ -26,41 +27,43 @@ Bezug: `custos-konzept.md` Abschnitt 19. Stand: Phase 1–6 erledigt.
 Hinweis: CI-Dogfooding-Workflow (GitHub Actions) aus Abschnitt 17 ist noch
 **nicht** angelegt (kein Remote/Org bestätigt) – siehe offene Punkte.
 
-## Offen – für nächste Läufe (bewusst NICHT gebaut)
+## Erledigt (Lauf Phase 7–11 + Querschnitt)
 
-### Struktur-Platzhalter, noch zu implementieren (Abschnitt 5/6)
-- [ ] Agenten: `scope-guard`, `council-advisor` (×5), `council-chair`,
-  `plain-text-translator`
-- [ ] Skills: `grill-me`, `plan-mode`, `build-mode`, `cleanup-mode`
-- [ ] Detektoren: `impact_analysis.py`, `db_schema_guard.py`,
-  `a11y_frontend_check.py`
-- [ ] Weitere Gates aus Abschnitt 8: Trivial-Schranke (`UserPromptSubmit`),
-  Plan-Freigabe-Gate (`PreToolUse` auf `ExitPlanMode`), Scope-Wächter,
-  DB-Schema-Guard, Impact-Analyse, A11y-Check, Regressions-Wächter
-  (`SubagentStop`)
+- [x] Agenten komplett: `scope-guard`, `council-advisor`, `council-chair`,
+  `plain-text-translator`.
+- [x] Skills komplett: `grill-me`, `plan-mode`, `build-mode`, `cleanup-mode`,
+  `council-mode`, `multi-session`.
+- [x] Detektoren komplett: `impact_analysis.py`, `db_schema_guard.py`,
+  `a11y_frontend_check.py`.
+- [x] Alle Gates aus Abschnitt 8 verdrahtet (Trivial-Schranke, Plan-Freigabe,
+  Scope-Wächter, DB-Schema-Guard, Impact, A11y, Regressions-Wächter).
+- [x] **Phase 7 – Fleet-Bearbeitung**: `bin/fleet_fix.py` (opt-in Branch+PR,
+  dry-run default, nie direkt auf main).
+- [x] **Phase 8 – Council**: `council-advisor`/`council-chair` + `bin/council_log.py`
+  (Suppression nur mit Ablaufdatum).
+- [x] **Phase 9 – Multi-Session**: `bin/task_queue.py` (lock-guarded, proof-pflichtig)
+  + `monitors/monitors.json` (Worktree-Isolation).
+- [x] **Phase 10 – Interface**: `bin/build_dashboard.py` → `interface/`.
+- [x] **Phase 11 – Selbstqualifizierung**: `tests/` (16 Fälle) + `bin/selfqual.py`
+  (Release-Metrik in `custos_findings.json`).
+- [x] Fleet-Discovery GitHub-Teil (`fleet_discover.py --github`).
+- [x] Zero-Tolerance-Modus (fail-closed bei jedem Fund + fehlendem Linter).
+- [x] Codex-Mapping dokumentiert (`CODEX.md`).
+- [x] CI-Dogfooding-Workflow (`.github/workflows/custos.yml`).
 
-### Größere Phasen (Abschnitt 19, Phase 7–11)
-- [ ] **Phase 7 – Fleet-Bearbeitung**: Auto-Fix-PRs für freigegebene Repos
-  (Abschnitt 10.3)
-- [ ] **Phase 8 – Council**: Fünf-Advisor-Mechanismus für strittige Fälle
-  (Abschnitt 6/9)
-- [ ] **Phase 9 – Multi-Session**: Worktree-Isolation + Task-Queue-Koordination
-  (Abschnitt 11)
-- [ ] **Phase 10 – Interface**: Dark-Terminal-Dashboard aus Abschnitt 18,
-  gespeist aus `custos_findings.json`. **Verbindliche Design-Referenz:**
+## Offen – Feinschliff / bewusst als Platzhalter belassen
+
+- [ ] Aktive Security-Scans (nmap/ZAP, Abschnitt 15.4) – erst nach befüllter,
+  freigegebener `custos/scope.yaml`. **NICHT gebaut** (scharf, irreversibel).
+- [ ] Fleet-Auto-Fix scharfschalten: `autofix: true` pro Repo + `--push` – bewusst
+  opt-in, vom User auszulösen.
+- [ ] ENTSCHEIDUNG NÖTIG: echte Hosts/Repos in `custos/scope.yaml` (aktuell leer).
+- [ ] Zero-Tolerance weiter härten: mehrere Scanner parallel, zeitgesteuerte
+  Rescans (Basis steht).
+- [ ] Codex-Event-Adapter tatsächlich implementieren (Mapping steht in CODEX.md).
+- [ ] Interface-Feinschliff gegen die verbindliche Claude-Design-Referenz:
   <https://claude.ai/design/p/e5676802-f116-4b7a-bd09-06dc8c891cc8?file=CUSTOS+Dashboard.dc.html&via=share>
-- [ ] **Phase 11 – Selbstqualifizierung**: Referenz-Testsuite, Session-Logs,
-  Release-Metriken (Abschnitt 12)
-
-### Querschnitt
-- [ ] Fleet-Discovery GitHub-Teil (`gh repo list`, Abschnitt 10.1) – bisher nur
-  lokale `.git`-Discovery gebaut.
-- [ ] ENTSCHEIDUNG NÖTIG: echte `roots:` in `custos/fleet.yaml` und echte
-  Hosts/Repos in `custos/scope.yaml` befüllen (aktuell Platzhalter/leer).
-- [ ] Zero-Tolerance-Policy härten (Abschnitt 16): fail-closed auch bei
-  fehlendem Linter, mehrere Scanner parallel, zeitgesteuerte Rescans
-- [ ] Codex-Variante (Abschnitt 14)
-- [ ] CI-Dogfooding-Workflow (Abschnitt 17)
 - [ ] Feldnamen von Hooks/Plugin/Settings gegen aktuelle Doku gegenprüfen
-  (`/docs/en/hooks`, `/docs/en/plugins`, `/docs/en/permissions`) – Konzept-
-  Fußnote; Format hier nach bestem aktuellen Wissen umgesetzt.
+  (`/docs/en/hooks`, `/docs/en/plugins`, `/docs/en/permissions`) – Format nach
+  bestem aktuellen Wissen umgesetzt.
+- [ ] GitHub-Org anlegen + Push (macht der User manuell).
