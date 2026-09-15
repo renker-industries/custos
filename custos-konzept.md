@@ -276,10 +276,10 @@ Der Preis dafür ist mehr Reibung: Builds brechen auch bei kleinen Funden, und m
 
 Damit das Repo von Anfang an seriös wirkt und nicht wie ein halbfertiger Side-Hack:
 
-- **Repo-Name:** `custos` (unter der `renker-industries`-Org, siehe Abschnitt 3, statt unter dem privaten Account).
+- **Repo-Name:** `custos` unter der neu anzulegenden `renker-industries`-Org (Abschnitt 3), nicht unter dem privaten Account. **Entschieden.**
 - **README-Grundgerüst:** Ein-Satz-Pitch oben (Abschnitt 2), darunter kurz „Was es tut" (die vier Ebenen aus Abschnitt 4 als knappe Liste), Installationsschritt, ein Screenshot/GIF des Interfaces (Abschnitt 18), Lizenzabschnitt.
-- **Badges:** Build-Status (eigene CI, die die CUSTOS-Gates auf sich selbst anwendet – Dogfooding), Lizenz-Badge, optional „0 offene Funde"-Badge, der sich aus dem letzten `custos_findings.json` speist statt einer Behauptung.
-- **Lizenzwahl:** Muss vor Veröffentlichung bewusst getroffen werden (MIT/Apache-2.0 für offene Weiterverwendung vs. restriktivere Lizenz, falls es kommerziell bleiben soll) – siehe offene Punkte.
+- **Badges:** Build-Status (eigene CI, die die CUSTOS-Gates auf sich selbst anwendet – Dogfooding), MIT-Lizenz-Badge, optional „0 offene Funde"-Badge, der sich aus dem letzten `custos_findings.json` speist statt einer Behauptung.
+- **Lizenz: MIT.** **Entschieden** – maximal offen, einfachste Wahl für Sichtbarkeit/Reputation. Der `LICENSE`-Platzhalter im Repo wird durch den Standard-MIT-Text ersetzt (Copyright-Zeile: Jahr + Renker Industries bzw. Autorenname).
 - **CI-Dogfooding:** Ein GitHub-Actions-Workflow, der bei jedem Push dieselben Gates laufen lässt, die CUSTOS auch für fremde Projekte durchsetzt – die beste Werbung ist ein Repo, das die eigenen Regeln sichtbar einhält.
 - **.github/-Ordner:** Issue-Templates, ggf. CONTRIBUTING.md, falls die Community-Idee aus dem Vorbild-Video später doch aufgegriffen werden soll (optional, nicht Teil des MVP).
 
@@ -310,10 +310,12 @@ Festgelegter Stil: dunkles Terminal-Dashboard (Farben/Typografie siehe Abschnitt
 
 ## 20. Offene Punkte
 
-- Lizenzwahl für die Veröffentlichung (Abschnitt 17) – MIT/Apache-2.0 oder restriktiver?
-- Existiert die GitHub-Org `renker-industries` schon, oder muss sie neu angelegt werden?
+Entschieden (15.09.2026): Lizenz = MIT (Abschnitt 17), GitHub-Org `renker-industries` wird neu angelegt (Abschnitt 3), Fleet-Modus startet mit **nur `custos` selbst** als „aktiv überwacht" (Abschnitt 10.2) – alle anderen Repos bleiben erstmal nur inventarisiert, bis einzeln freigegeben.
+
+Noch offen:
+
 - Welche Wurzelverzeichnisse auf dem PC soll die lokale Repo-Discovery (Abschnitt 10.1) überhaupt durchsuchen?
-- Welche der eigenen GitHub-Repos werden zum Start als „aktiv überwacht" freigegeben, welche bleiben erstmal nur inventarisiert?
+- Wann und welches zweite Repo (vermutlich RenkerNet oder RENCORA/LOKARA) wird als nächstes für den Fleet-Modus freigegeben?
 - Wie groß soll die Referenz-Testsuite für Regressionsläufe initial sein, und aus welchen eigenen Projekten wird sie gespeist?
 - Soll der Task-Queue-Mechanismus über eine Datei im Repo oder einen lokalen MCP-Server laufen?
 - Welche IPs/Hostnamen/Repos gehören konkret in die Scope-Datei (Abschnitt 15.1), bevor irgendein aktiver Scan aktiviert wird?
