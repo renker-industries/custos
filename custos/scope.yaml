@@ -1,0 +1,17 @@
+# CUSTOS security scope / asset allowlist (concept section 15.1).
+#
+# This file is the HARD PRECONDITION for any ACTIVE scan (nmap, ZAP, ...). Active
+# scans must validate their target against this list and abort otherwise, so a
+# mis-configured token or a typo can never reach a foreign, cloud, or third-party
+# host. Active scans are NOT built yet (later phase) — this file is seeded empty.
+#
+# The PASSIVE hardening checks (bin/security_passive.py) run only against the
+# LOCAL machine and do not consult this list.
+#
+# ENTSCHEIDUNG NOETIG: fill in only hosts/IPs/repos you own and are allowed to
+# scan. Some cloud providers require prior notice even for your own instances.
+
+hosts: []      # e.g. ["192.168.1.10", "myserver.local"] - owned assets only
+repos: []      # repos allowed for active repo-level security scans
+notes: >-
+  Empty by default = no active scan may run. Add entries deliberately.
