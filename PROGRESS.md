@@ -39,9 +39,13 @@ wie oben dokumentiert. Kein Gate nur behauptet – jedes ausgeführt.
 Siehe `ROADMAP_STATUS.md`. Kern: restliche Agenten/Skills/Detektoren + Gates aus
 Abschnitt 8, Phasen 4–11, Zero-Tolerance-Härtung, CI-Dogfooding.
 
-## ENTSCHEIDUNG NÖTIG (Abschnitt 20 – nicht autonom entschieden)
+## Entscheidungen getroffen (Abschnitt 20, vom User)
 
-Lizenzwahl, GitHub-Org `renker-industries` (existiert?), Repo-Freigaben.
+- Lizenz = **MIT** (c) 2026 Renker Industries → `LICENSE` + README aktualisiert.
+- GitHub-Org `renker-industries` wird angelegt – **Org-Anlegen + Push macht der
+  User manuell**, nicht dieser Lauf.
+- Fleet-Modus startet nur mit `custos` selbst als „aktiv überwacht".
+
 Siehe `DECISIONS.md`.
 
 ## BLOCKIERT

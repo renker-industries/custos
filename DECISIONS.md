@@ -31,10 +31,11 @@ final entschieden).
 - **`custos_findings.json` und `custos.config.json` in `.gitignore`** – Runtime-
   Artefakte bzw. lokale Konfiguration, nicht Quellcode.
 
-## ENTSCHEIDUNG NÖTIG (nicht autonom – Konzept Abschnitt 20)
+## Erledigt (vom User entschieden, Abschnitt 20)
 
-- **Lizenzwahl** für die Veröffentlichung (MIT/Apache-2.0 vs. restriktiver).
-  Aktuell Platzhalter in `LICENSE` und README.
-- **GitHub-Org `renker-industries`** – existiert sie schon oder neu anzulegen?
-- **Repo-Freigaben**: welche eigenen GitHub-Repos zum Start „aktiv überwacht"
-  vs. „nur inventarisiert" (relevant erst für Fleet-Modus, spätere Phase).
+- [x] **Lizenz = MIT**, Copyright (c) 2026 Renker Industries. Umgesetzt in
+  `LICENSE` (Standard-MIT-Text) und README-Lizenzabschnitt.
+- [x] **GitHub-Org `renker-industries`** wird angelegt – Anlegen + Push macht
+  der User manuell (nicht durch CUSTOS-Lauf).
+- [x] **Fleet-Modus-Start**: nur `custos` selbst als „aktiv überwacht", alle
+  weiteren Repos zunächst „nur inventarisiert" (greift erst in Fleet-Phase).

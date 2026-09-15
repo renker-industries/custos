@@ -66,7 +66,4 @@ Council, Multi-Session, Interface, Selbstqualifizierung) ist in
 
 ## Lizenz
 
-> **Platzhalter – Lizenzwahl noch offen.** MIT/Apache-2.0 (offene
-> Weiterverwendung) vs. restriktiver (falls kommerziell) ist vor
-> Veröffentlichung bewusst zu entscheiden – siehe `DECISIONS.md` und
-> Konzept-Abschnitt 20. Bis dahin: alle Rechte vorbehalten, Renker Industries.
+MIT License – Copyright (c) 2026 Renker Industries. Siehe [`LICENSE`](LICENSE).
