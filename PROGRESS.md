@@ -55,10 +55,18 @@ Council, Multi-Session, Interface, Selbstqualifizierung), restliche
 Agenten/Skills/Detektoren + Gates aus Abschnitt 8, Fleet-GitHub-Discovery
 (`gh repo list`), Zero-Tolerance-Härtung, CI-Dogfooding.
 
+## Fleet roots gesetzt (2026-09-15)
+
+- `roots:` in `custos/fleet.yaml` = `C:\Users\Sebas\CascadeProjects` +
+  `C:\Users\Sebas\Documents`.
+- `fleet_discover.py` gelaufen: **18 Repos** erfasst (1 aktiv-ueberwacht =
+  custos, 17 nur-inventarisiert), 17 new, rc=0 ✓. Read-only, nichts in
+  Fremd-Repos geschrieben.
+
 ## ENTSCHEIDUNG NÖTIG (Platzhalter im Code)
 
-- `roots:` in `custos/fleet.yaml` – echte Scan-Wurzelverzeichnisse (aktuell leer).
 - Hosts/Repos in `custos/scope.yaml` – echte, scan-erlaubte Assets (aktuell leer).
+- Welche der 17 inventarisierten Repos als nächstes „aktiv-ueberwacht"?
 
 ## Entscheidungen getroffen (Abschnitt 20, vom User)
 
