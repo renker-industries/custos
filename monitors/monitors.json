@@ -1,0 +1,21 @@
+{
+  "description": "CUSTOS multi-session and fleet coordination config (concept sections 11 and 15.3). Consumed by the coordination helpers; see skills/multi-session.",
+  "taskQueue": {
+    "file": "custos_tasks.json",
+    "lock": "custos_tasks.lock",
+    "completionRequiresProof": true
+  },
+  "isolation": {
+    "strategy": "git-worktree",
+    "note": "Each parallel session/subagent that writes runs in its own git worktree (Agent tool isolation:worktree) to avoid file collisions; merges go through normal branch/PR after the proof gate."
+  },
+  "scheduledMonitors": [
+    {
+      "id": "passive-security",
+      "command": "python bin/security_passive.py",
+      "cadence": "daily",
+      "enabled": false,
+      "note": "Local, observational hardening scan into custos_findings.json. Enable per host (cron / Task Scheduler)."
+    }
+  ]
+}
