@@ -95,6 +95,23 @@ final entschieden).
   und (redacted) Fund-Orten, kein Quellcode. Die **committete**
   `interface/custos-dashboard.html` wird ohne lokale Funde generiert (Privacy).
 
+## Fleet-Fund-Triage (2026-09-16)
+
+- **rencora `dashboard/static/tv.html:70` = FALSE POSITIVE.** Wert ist
+  `const TOKEN="__TVTOKEN__";` – ein Template-Platzhalter, der serverseitig in
+  `dashboard/server.py:1234` ersetzt wird (`html.replace("__TVTOKEN__", tok)`).
+  Die statische Datei enthält **kein echtes Secret**. In `fleet_findings.json`
+  als `falsePositive: true` markiert; kein Code-Fix, kein PR (Schritt 1.2). Nur
+  `Documents/rencora` (rencora-public) hat die Datei; `renker-repos/rencora` hat
+  sie nicht.
+- **Exposure-Einschätzung**: Nicht kritisch – da nur ein Platzhalter im Repo/
+  in der Historie steht, ist trotz öffentlichem Charakter des rencora-public-
+  Remotes kein echter Wert exponiert. Keine Rotation, keine Historie-Bereinigung
+  nötig.
+- **Follow-up (nicht in diesem Lauf, wäre CUSTOS-Änderung):** die PLACEHOLDER-
+  Regex in `bin/fleet_scan.py` um Template-Muster `__NAME__` erweitern, damit
+  solche Platzhalter künftig nicht mehr als Secret-Kandidat gemeldet werden.
+
 ## ENTSCHEIDUNG NÖTIG (Platzhalter im Code, echte Werte fehlen)
 
 - **Repo-Discovery-Wurzelverzeichnisse** (`roots:` in `custos/fleet.yaml`):

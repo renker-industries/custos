@@ -83,9 +83,22 @@ Kein Baustein nur behauptet – jeder ausgeführt.
     minified-Filter ergänzt, danach sauber.
 - selfqual weiterhin 16/16 grün. Kein Fremd-Repo geschrieben/committet/gepusht.
 
+## Secret-Fund-Triage (2026-09-16)
+
+- Betroffen: nur `C:\Users\Sebas\Documents\rencora` (Remote rencora-public);
+  `renker-repos/rencora` hat die Datei nicht.
+- `dashboard/static/tv.html:70` = `const TOKEN="__TVTOKEN__";` → **FALSE POSITIVE**:
+  Platzhalter, serverseitig ersetzt (`dashboard/server.py:1234`). Kein echtes
+  Secret, **kein Fix/PR** (Schritt 1.2 des Auftrags).
+- `fleet_findings.json`: Eintrag als `falsePositive` markiert, echte Secrets = 0.
+- **Exposure**: unkritisch – nur ein Platzhalter in Code/Historie, kein echter
+  Wert exponiert; keine Token-Rotation, keine Historie-Bereinigung nötig.
+- Kein Fremd-Repo verändert; fleet_fix.py nicht ausgeführt (kein echter Fund).
+
 ## Läuft gerade
 
-- Nichts offen. Konzept-Funktionsumfang (Phase 1–11) + Fleet-Scan abgeschlossen.
+- Nichts offen. Konzept-Funktionsumfang (Phase 1–11) + Fleet-Scan + Fund-Triage
+  abgeschlossen.
 
 ## Noch offen (bewusst, scharf-zu-schaltend/irreversibel)
 
