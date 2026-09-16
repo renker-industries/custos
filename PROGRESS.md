@@ -98,6 +98,31 @@ Push (manuell durch User).
 
 Siehe `DECISIONS.md`.
 
-## BLOCKIERT
+## Lauf 2026-09-16 — Veröffentlichung + Fleet-Aktivierung
 
-- Nichts. Kein Blocker aufgetreten.
+### SCHRITT 1 (Veröffentlichung) — BLOCKIERT
+
+- `gh auth status`: eingeloggt als **`sebastianrenker`** (Scopes: `repo`,
+  `workflow`, `read:org`, `gist`) ✓ — also KEIN Login-Blocker.
+- Working tree war clean; Branch `master` → **`main`** umbenannt (Task will
+  `main`-Schutz; Entscheidung in DECISIONS.md).
+- `gh repo create renker-industries/custos --private --source=. --remote=origin
+  --push` → **HTTP 404: Not Found (https://api.github.com/users/renker-industries)**.
+- Diagnose: `gh api user/orgs` und `user/memberships/orgs` beide **leer** → der
+  eingeloggte Account `sebastianrenker` hat **keine Org-Mitgliedschaft**; GitHub
+  liefert Nicht-Mitgliedern 404 statt 403.
+
+**BLOCKIERT: Org `renker-industries` von diesem Account nicht erreichbar / keine
+Push-Rechte.** Nicht selbst umgangen (kein Push unter den falschen Account
+`sebastianrenker`). Damit gestoppt: Repo-Anlage, Push, Branch-Protection auf
+`main` (Schritte 3–4, 6 der Veröffentlichung).
+
+**Was der User tun muss (eine dieser Optionen):**
+1. `sebastianrenker` als **Member/Owner** der Org `renker-industries` hinzufügen
+   (falls die Org unter einem anderen GitHub-Account angelegt wurde), ODER
+2. gh mit dem Account einloggen, der die Org besitzt: `gh auth login`, ODER
+3. Org-Slug prüfen (evtl. anderer Name als `renker-industries`).
+Danach genügt erneut: `gh repo create renker-industries/custos --private
+--source=. --remote=origin --push` (Branch ist bereits `main`).
+
+### SCHRITT 2 (Fleet-Aktivierung) — lokal ausgeführt (unabhängig vom Push)

@@ -92,3 +92,23 @@ final entschieden).
   der User manuell (nicht durch CUSTOS-Lauf).
 - [x] **Fleet-Modus-Start**: nur `custos` selbst als „aktiv überwacht", alle
   weiteren Repos zunächst „nur inventarisiert" (greift erst in Fleet-Phase).
+
+## Lauf 2026-09-16 (Veröffentlichung + Fleet-Aktivierung)
+
+- **Default-Branch `main`**: lokaler Branch `master` → `main` umbenannt, weil der
+  Auftrag Branch-Protection auf `main` verlangt und `main` die aktuelle Konvention
+  ist. (Push noch nicht erfolgt, siehe Blocker.)
+- **Sichtbarkeit privat**: Repo wird `--private` angelegt (Default), da noch kein
+  Release-Zeitpunkt entschieden ist. Öffentlich erst auf ausdrückliche Ansage.
+- **Org-Block nicht umgangen**: Da `renker-industries` von diesem Account nicht
+  erreichbar ist, wurde NICHT ersatzweise unter `sebastianrenker/custos`
+  veröffentlicht — das wäre der falsche Owner. Stattdessen sauber BLOCKIERT
+  eingetragen (PROGRESS.md).
+- **Fleet-Aktivierung**: alle 18 inventarisierten Repos auf
+  `status: aktiv-ueberwacht` gesetzt. `autofix` bleibt für ALLE aus — explizit als
+  `autofix: false` pro Repo eingetragen, damit die Nicht-Scharfschaltung
+  inspizierbar ist. Auto-Fix bleibt manuelle Einzelentscheidung.
+- **„Fleet-Scan" = read-only Discovery (Phase 5)**: der einzige fleet-weite,
+  read-only Pass, der gebaut ist, ist `bin/fleet_discover.py`. Als Fleet-Scan
+  ausgeführt. Inhaltliche Detektor-/Security-Funde bleiben bewusst hinter
+  `custos/scope.yaml` (leer/aus) — kein aktiver Scan, wie beauftragt.
