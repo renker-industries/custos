@@ -4,69 +4,87 @@ roots:
 repos:
 - name: AEGIS-SUIT-STUDIO
   path: C:\Users\Sebas\Documents\AEGIS-SUIT-STUDIO
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/aegis-suit-studio.git
+  autofix: false
 - name: custos
   path: C:\Users\Sebas\Documents\CUSTOS
   status: aktiv-ueberwacht
+  autofix: false
 - name: New project
   path: C:\Users\Sebas\Documents\ChatGPT\New project
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
+  autofix: false
 - name: ada_local
   path: C:\Users\Sebas\Documents\Tutorial 2\ada_local
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/nazirlouis/ada_local.git
+  autofix: false
 - name: ai-training-project
   path: C:\Users\Sebas\Documents\ai-training-project
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
+  autofix: false
 - name: memecoin-bot
   path: C:\Users\Sebas\Documents\memecoin-bot
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/memecoin-bot.git
+  autofix: false
 - name: rencora
   path: C:\Users\Sebas\Documents\rencora
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/rencora-public.git
+  autofix: false
 - name: continuum
   path: C:\Users\Sebas\Documents\renker-repos\continuum
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/continuum.git
+  autofix: false
 - name: rencora
   path: C:\Users\Sebas\Documents\renker-repos\rencora
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/rencora.git
+  autofix: false
 - name: renker-agent-demo
   path: C:\Users\Sebas\Documents\renker-repos\renker-agent-demo
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/renker-agent-demo.git
+  autofix: false
 - name: renker-core
   path: C:\Users\Sebas\Documents\renker-repos\renker-core
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/renker-core.git
+  autofix: false
 - name: renker-core-authz
   path: C:\Users\Sebas\Documents\renker-repos\renker-core-authz
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/renker-core-authz.git
+  autofix: false
 - name: renker-whitepaper
   path: C:\Users\Sebas\Documents\renker-repos\renker-whitepaper
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/renker-whitepaper.git
+  autofix: false
 - name: renkervault
   path: C:\Users\Sebas\Documents\renker-repos\renkervault
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/renkervault.git
+  autofix: false
 - name: sebastianrenker
   path: C:\Users\Sebas\Documents\renker-repos\sebastianrenker
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/sebastianrenker.git
+  autofix: false
 - name: sebastianrenker.github.io
   path: C:\Users\Sebas\Documents\renker-repos\sebastianrenker.github.io
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/sebastianrenker.github.io.git
+  autofix: false
 - name: renker-swarm
   path: C:\Users\Sebas\Documents\renker-swarm
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/renker-swarm.git
+  autofix: false
 - name: reviewflow
   path: C:\Users\Sebas\Documents\reviewflow
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
+  autofix: false
