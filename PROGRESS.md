@@ -126,3 +126,24 @@ Danach genügt erneut: `gh repo create renker-industries/custos --private
 --source=. --remote=origin --push` (Branch ist bereits `main`).
 
 ### SCHRITT 2 (Fleet-Aktivierung) — lokal ausgeführt (unabhängig vom Push)
+
+- **Schritt 7:** alle **18** inventarisierten Repos auf `status: aktiv-ueberwacht`
+  gesetzt; `autofix: false` explizit pro Repo eingetragen (keins scharf). ✓
+- **Schritt 8 — Fleet-Scan (read-only Discovery, `bin/fleet_discover.py`):** rc=0,
+  read-only, nichts in Fremd-Repos geschrieben. Ergebnis: **19 Repos** gesehen —
+  18 `aktiv-ueberwacht`, **1 neu entdeckt** (`renker-flint`, seit dem letzten
+  Scan dazugekommen) → per Default `nur-inventarisiert`.
+- **`renker-flint` NICHT auto-aktiviert:** der Auftrag nannte explizit „die 18".
+  Aktivierung = Gates anwenden = bewusste Einzelentscheidung (wie beim Fleet-Start
+  mit nur `custos`). Bleibt `nur-inventarisiert`, bis der User entscheidet.
+- **Funde-Bilanz:** Der Fleet-Scan ist die read-only Discovery (Repo-Inventar) —
+  **0 Code-/Security-Funde**, weil inhaltliche Detektoren/aktive Scans bewusst
+  hinter `custos/scope.yaml` (leer/aus) liegen und nicht scharf sind. Es existiert
+  (absichtlich) kein fleet-weiter Detektor-Runner; kein aktiver Scan gegen Hosts.
+
+### Offene Punkte nach diesem Lauf
+
+- **[BLOCKER] Org-Zugang** für `sebastianrenker` zu `renker-industries` (oben).
+- **renker-flint**: neu im Fleet — aktiv überwachen ja/nein? (User)
+- **scope.yaml** weiterhin leer/aus (unverändert, wie beauftragt).
+- Nach Org-Fix: Push + Branch-Protection `main` + README-Repo-Link final setzen.

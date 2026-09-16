@@ -34,6 +34,10 @@ repos:
   status: aktiv-ueberwacht
   remote: https://github.com/sebastianrenker/rencora-public.git
   autofix: false
+- name: renker-flint
+  path: C:\Users\Sebas\Documents\renker-flint
+  status: nur-inventarisiert
+  remote: https://github.com/sebastianrenker/renker-flint.git
 - name: continuum
   path: C:\Users\Sebas\Documents\renker-repos\continuum
   status: aktiv-ueberwacht
