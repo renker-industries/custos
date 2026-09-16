@@ -1,95 +1,91 @@
 # CUSTOS
 
-> CUSTOS ist der Wächter, der jede Behauptung deines KI-Agenten in einen Beweis
-> verwandelt – bevor Code, Repo oder Server sich „fertig" nennen dürfen.
+> CUSTOS is the guardian that turns every claim your AI agent makes into proof —
+> before any code, repo, or server is allowed to call itself "done".
 
-Ein KI-Coding-Agent behauptet gerne, dass etwas fertig, korrekt oder sicher ist.
-CUSTOS sorgt dafür, dass er das an jeder relevanten Stelle im Ablauf **belegen
-muss** – mit einem ausgeführten Kommando (Linter, Testlauf, Statik-Check),
-nicht mit einem Satz in der Antwort.
+An AI coding agent likes to claim that something is finished, correct, or secure.
+CUSTOS makes it **prove that** at every relevant point in the workflow — with an
+executed command (linter, test run, static check), not with a sentence in its
+reply.
 
-CUSTOS ist als Claude-Code-Plugin gebaut und Teil der Renker-Industries-
-Produktfamilie – die querschnittliche Qualitäts- und Sicherheitsschicht über
-allen Projekten.
+CUSTOS is built as a Claude Code plugin and is part of the Renker Industries
+product family — the cross-cutting quality and security layer over all projects.
 
-**Repository:** <https://github.com/renker-industries/custos> (privat)
+**Repository:** <https://github.com/renker-industries/custos>
 
-## Was es tut
+## What it does
 
-Vier Ebenen, jede auf einen realen Claude-Code-Baustein abgebildet:
+Four layers, each mapped onto a real Claude Code building block:
 
-- **Haltung** – Ein Default-Agent (`senior-dev`) eröffnet jede Session und
-  triagiert: trivial oder planungspflichtig.
-- **Reflexe** – Hooks speisen Kontext ein und erzwingen Rückfragen, bevor blind
-  geplant wird.
-- **Mechanik** – Hooks führen Linter/Statik-Tools aus und blocken bei Exit-Code 2.
-- **Beweise** – Ein `Stop`-Hook erzwingt einen Testlauf/Linter, bevor die Session
-  enden darf. Kein grüner Exit-Code, kein Sessionende.
+- **Posture** – a default agent (`senior-dev`) opens every session and triages:
+  trivial, or planning-required.
+- **Reflexes** – hooks feed in context and force clarifying questions before
+  anything is planned blindly.
+- **Mechanics** – hooks run linters/static tools and block on exit code 2.
+- **Proof** – a `Stop` hook forces a test run/linter before a session is allowed
+  to end. No green exit code, no session end.
 
-### Enthalten (Roadmap-Phase 1–11, Konzept vollständig umgesetzt)
+### Included (roadmap phases 1–11, concept fully implemented)
 
-**Agenten:** `senior-dev` (Default, Triage), `plan-reviewer`, `scope-guard`,
-`root-cause` (Debug-Kausalanalyse), `council-advisor` ×5 + `council-chair`,
+**Agents:** `senior-dev` (default, triage), `plan-reviewer`, `scope-guard`,
+`root-cause` (debug causal analysis), `council-advisor` ×5 + `council-chair`,
 `plain-text-translator`.
 
-**Skills/Modi:** `grill-me`, `plan-mode`, `build-mode`, `debug-mode`,
+**Skills/modes:** `grill-me`, `plan-mode`, `build-mode`, `debug-mode`,
 `cleanup-mode`, `data-analytics-mode`, `fleet-mode`, `security-mode`,
 `council-mode`, `multi-session`.
 
-**Gates (Hooks, Konzept Abschnitt 8):**
-- `UserPromptSubmit` – Trivial-Schranke (Triage-Reminder)
-- `PreToolUse ExitPlanMode` – Plan-Freigabe (blockt bis Plan-Reviewer freigibt)
-- `PreToolUse Write|Edit` – Scope-Wächter + DB-Schema-Guard
-- `PostToolUse` – AI-Slop-Detektor, Statik-Dispatch (ruff/`py_compile`, eslint),
-  Impact-Analyse, A11y-Check
-- `Stop` – Beweis-Gate (erzwingt grünen Proof-Lauf)
-- `SubagentStop` – Regressions-Wächter (blockt grün→rot)
+**Gates (hooks, concept section 8):**
+- `UserPromptSubmit` – trivial gate (triage reminder)
+- `PreToolUse ExitPlanMode` – plan approval (blocks until the plan reviewer clears it)
+- `PreToolUse Write|Edit` – scope guard + DB-schema guard
+- `PostToolUse` – AI-slop detector, static dispatch (ruff/`py_compile`, eslint),
+  impact analysis, a11y check
+- `Stop` – proof gate (forces a green proof run)
+- `SubagentStop` – regression guard (blocks green→red)
 
-**Werkzeuge (`bin/`):** Fleet-Discovery (lokal + GitHub, read-only), Fleet-
-Auto-Fix (opt-in Branch+PR, dry-run default), passive Security-Checks, Council-
-Log, Multi-Session-Task-Queue, Dashboard-Generator, Selbstqualifizierung.
+**Tools (`bin/`):** fleet discovery (local + GitHub, read-only), fleet auto-fix
+(opt-in branch+PR, dry-run by default), passive security checks, council log,
+multi-session task queue, dashboard generator, self-qualification.
 
-**Zero-Tolerance-Modus** (Abschnitt 16): `CUSTOS_ZERO_TOLERANCE=1` bzw.
-`zeroTolerance: true` – fail-closed, blockt bei jedem einzelnen Fund.
+**Zero-tolerance mode** (section 16): `CUSTOS_ZERO_TOLERANCE=1` or
+`zeroTolerance: true` – fail-closed, blocks on every single finding.
 
-Alle Funde landen zeitgestempelt in `custos_findings.json` – ein Beleg, keine
-Behauptung. Dashboard: `python bin/build_dashboard.py` → `interface/`.
+Every finding lands time-stamped in `custos_findings.json` — a record, not a
+claim. Dashboard: `python bin/build_dashboard.py` → `interface/`.
 
 ## Installation
 
 ```bash
-# Als lokales Plugin laden
-claude --plugin-dir /pfad/zu/custos
+# Load as a local plugin
+claude --plugin-dir /path/to/custos
 ```
 
-Optional eine `custos.config.json` im Repo-Root anlegen (siehe
-`custos.config.example.json`), um das Beweis-Kommando festzulegen:
+Optionally create a `custos.config.json` in the repo root (see
+`custos.config.example.json`) to set the proof command:
 
 ```json
 { "proofCommand": "pytest -q" }
 ```
 
-Ohne Konfiguration erkennt das Beweis-Gate `pytest` oder ein `npm test`-Skript
-automatisch.
+Without configuration the proof gate auto-detects `pytest` or an `npm test` script.
 
-**Voraussetzung:** Python 3 auf dem PATH (die Detektoren sind plattform-
-unabhängig in Python geschrieben – keine WSL-Pflicht unter Windows).
+**Requirement:** Python 3 on the PATH (the detectors are written in
+platform-independent Python — no WSL required on Windows).
 
 ## Dogfooding
 
-CUSTOS wendet die eigenen Regeln auf sich selbst an: `python bin/selfqual.py`
-lässt die Referenz-Testsuite (`tests/`) laufen – dieselbe Beweispflicht, die
-CUSTOS für andere Projekte durchsetzt. CI (`.github/workflows/custos.yml`) macht
-das bei jedem Push/PR.
+CUSTOS applies its own rules to itself: `python bin/selfqual.py` runs the
+reference test suite (`tests/`) — the same proof obligation CUSTOS enforces on
+other projects. CI (`.github/workflows/custos.yml`) does this on every push/PR.
 
 ## Status
 
-Version 0.2.0 – der Konzept-Funktionsumfang (Roadmap-Phase 1–11) ist umgesetzt.
-Bewusst als scharf-zu-schaltende Platzhalter belassen: aktive Security-Scans
-(nmap/ZAP, brauchen befüllte `custos/scope.yaml`) und Fleet-Auto-Fix-Push (opt-in
-pro Repo). Details und Feinschliff-Punkte in
-[`ROADMAP_STATUS.md`](ROADMAP_STATUS.md).
+Version 0.2.0 – the concept feature set (roadmap phases 1–11) is implemented.
+Deliberately left as ready-to-arm placeholders: active security scans (nmap/ZAP,
+which need a populated `custos/scope.yaml`) and fleet auto-fix push (opt-in per
+repo). Details and polish points in [`ROADMAP_STATUS.md`](ROADMAP_STATUS.md).
 
-## Lizenz
+## License
 
-MIT License – Copyright (c) 2026 Renker Industries. Siehe [`LICENSE`](LICENSE).
+MIT License – Copyright (c) 2026 Renker Industries. See [`LICENSE`](LICENSE).
