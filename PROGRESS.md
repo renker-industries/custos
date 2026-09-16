@@ -147,3 +147,20 @@ Danach genügt erneut: `gh repo create renker-industries/custos --private
 - **renker-flint**: neu im Fleet — aktiv überwachen ja/nein? (User)
 - **scope.yaml** weiterhin leer/aus (unverändert, wie beauftragt).
 - Nach Org-Fix: Push + Branch-Protection `main` + README-Repo-Link final setzen.
+
+## Zusammenfassung Lauf 2026-09-16
+
+- **Repo-URL:** _noch keine_ — Ziel `https://github.com/renker-industries/custos`
+  (privat). **BLOCKIERT**: Org von Account `sebastianrenker` nicht erreichbar
+  (gh 404, 0 Org-Mitgliedschaften). Push + Branch-Protection `main` stehen aus,
+  bis der User Org-Zugang herstellt (siehe SCHRITT 1 oben).
+- **Fleet-Scan (read-only Discovery):** 19 Repos gesehen — 18 `aktiv-ueberwacht`,
+  1 neu (`renker-flint`) als `nur-inventarisiert`. **0 Code-/Security-Funde**
+  (inhaltliche Detektoren/aktive Scans bleiben hinter leerem `scope.yaml` — aus).
+  autofix für alle Repos `false` (nichts scharf).
+- **README-Repo-Link:** kein Platzhalter-/GitHub-Link vorhanden → nichts geändert
+  (kein Link auf ein noch nicht existierendes/erreichbares Repo erfunden).
+- **Lokal committet, nicht gepusht** (kein Remote): master→main, Fleet-Aktivierung,
+  Scan. Ein späterer Push überträgt alles.
+- **Offene Punkte:** (1) Org-Zugang/Push, (2) `renker-flint` aktivieren ja/nein,
+  (3) `scope.yaml` weiter leer/aus (unverändert, wie beauftragt).
