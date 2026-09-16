@@ -37,7 +37,8 @@ repos:
   autofix: false
 - name: renker-flint
   path: C:\Users\Sebas\Documents\renker-flint
-  status: nur-inventarisiert
+  status: aktiv-ueberwacht
+  autofix: false
   remote: https://github.com/sebastianrenker/renker-flint.git
 - name: continuum
   path: C:\Users\Sebas\Documents\renker-repos\continuum

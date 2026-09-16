@@ -75,6 +75,26 @@ final entschieden).
 - **Zero-Tolerance schaltbar** per env/Config statt hart verdrahtet – Reibung nur
   wenn bewusst gewollt.
 
+## Lauf Fleet-Scan (autonom entschieden)
+
+- **`renker-flint` → `aktiv-ueberwacht`, `autofix:false`** (deckt „alle Repos"-
+  Entscheidung; 19 Repos jetzt aktiv).
+- **`bin/fleet_scan.py` strikt read-only** – kein Write/Commit/Branch/Push in
+  Fremd-Repos, schreibt nur `custos/fleet_findings.json`.
+- **Fleet-Lint auf Repo-Ebene** (ruff/eslint, nur wenn Tool vorhanden, sonst
+  „skipped: Tool fehlt"). `py_compile` pro Datei wird fleet-weit NICHT gefahren
+  (zu laut, würde nur Syntax je Datei prüfen).
+- **Prune gebündelter Interpreter/venv + generierte Dateien**: `site-packages`,
+  `.python*`/`virtualenv`, `.min.js`/`*-lock`/`*.map` + minified-Heuristik
+  (max Zeilenlänge > 2000). Grund: rencora hatte ein eingecheckt es `.python312`
+  (3989/4000 Dateien = Dependencies) → sonst 109 Falsch-„Secrets" + 160k Slop.
+  Prune bewusst eng: echte `bin/`/`lib/`-Quellordner werden NICHT übersprungen.
+- **Secret-Scan repo-unabhängig**, Funde **redacted** (nur Präfix + Datei/Zeile)
+  protokolliert; Placeholder-Muster (example/xxx/<...>) gefiltert.
+- **`custos/fleet_findings.json` gitignored** – Runtime-Report mit lokalen Pfaden
+  und (redacted) Fund-Orten, kein Quellcode. Die **committete**
+  `interface/custos-dashboard.html` wird ohne lokale Funde generiert (Privacy).
+
 ## ENTSCHEIDUNG NÖTIG (Platzhalter im Code, echte Werte fehlen)
 
 - **Repo-Discovery-Wurzelverzeichnisse** (`roots:` in `custos/fleet.yaml`):

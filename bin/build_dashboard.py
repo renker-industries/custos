@@ -53,7 +53,8 @@ def load_fleet(path: str) -> dict:
     return {}
 
 
-def build_model(findings: dict, fleet: dict, supp: dict) -> dict:
+def build_model(findings: dict, fleet: dict, supp: dict,
+                fleet_findings: dict | None = None) -> dict:
     runs = findings.get("runs", []) if isinstance(findings, dict) else []
     # per detector aggregation
     detectors: dict[str, dict] = {}
@@ -74,14 +75,45 @@ def build_model(findings: dict, fleet: dict, supp: dict) -> dict:
             d["blocked"] += 1
         d["findings"] += len(r.get("findings", []) or [])
         d["last"] = r.get("timestamp")
+
+    # Merge the fleet-wide content scan (fleet_findings.json) into each repo by
+    # path (fallback name), so the fleet view shows real findings, not "0".
+    ff = fleet_findings if isinstance(fleet_findings, dict) else {}
+    scan_by_path: dict[str, dict] = {}
+    scan_by_name: dict[str, dict] = {}
+    for sr in ff.get("repos", []):
+        if sr.get("path"):
+            scan_by_path[os.path.abspath(sr["path"])] = sr
+        scan_by_name.setdefault(sr.get("repo"), sr)
+    repos = []
+    for entry in fleet.get("repos", []):
+        e = dict(entry)
+        sr = None
+        if entry.get("path"):
+            sr = scan_by_path.get(os.path.abspath(os.path.expanduser(entry["path"])))
+        sr = sr or scan_by_name.get(entry.get("name"))
+        if sr and sr.get("status") == "scanned":
+            fnd = sr.get("findings", {})
+            e["scan"] = {
+                "severity": sr.get("severity", "none"),
+                "secrets": len(fnd.get("secrets", [])),
+                "lint": fnd.get("lintIssues", 0),
+                "slop": fnd.get("aiSlop", 0),
+                "skipped": len(sr.get("skipped", [])),
+                "timestamp": sr.get("timestamp"),
+            }
+        repos.append(e)
+
     return {
         "generated": datetime.now(timezone.utc).isoformat(),
-        "repos": fleet.get("repos", []),
+        "repos": repos,
         "detectors": detectors,
         "security": security_runs[-20:],
         "council": council,
         "suppressions": supp.get("suppressions", []) if isinstance(supp, dict) else [],
         "totalRuns": len(runs),
+        "fleetTotals": ff.get("totals", {}),
+        "fleetGenerated": ff.get("generated"),
     }
 
 
@@ -143,14 +175,37 @@ const esc = s => (s==null?"":String(s));
 const app = document.getElementById("app");
 function h(html){ const d=document.createElement("div"); d.innerHTML=html; return d; }
 
-// 1. Fleet overview
-let s = '<h2>Fleet — '+M.repos.length+' repo(s)</h2><div class="grid">';
+// 1. Fleet overview (with real scan findings from fleet_findings.json)
+const sevCls = {high:"r", medium:"y", low:"g", none:"x"};
+const ft = M.fleetTotals || {};
+let ftLine = "";
+if(Object.keys(ft).length){
+  ftLine = '<div class="sub">Fleet scan: '+esc(ft.reposScanned)+' scanned · '+
+    '<span class="num'+(ft.secrets?" bad":"")+'">'+esc(ft.secrets)+'</span> secrets · '+
+    esc(ft.lintIssues)+' lint · '+esc(ft.aiSlop)+' slop · '+
+    esc(ft.skippedChecks)+' checks skipped'+
+    (M.fleetGenerated?' · '+esc(M.fleetGenerated):'')+'</div>';
+}
+let s = '<h2>Fleet — '+M.repos.length+' repo(s)</h2>'+ftLine+'<div class="grid">';
 if(!M.repos.length) s += '<div class="empty">No repos. Run fleet_discover.py.</div>';
 for(const r of M.repos){
   const active = r.status==="aktiv-ueberwacht";
-  s += '<div class="card row"><span class="dot '+(active?"g":"x")+'"></span>'+
+  const sc = r.scan;
+  const dot = sc ? (sevCls[sc.severity]||"x") : (active?"g":"x");
+  let metrics = '';
+  if(sc){
+    metrics = '<span class="badge'+(sc.secrets?" ":"")+'">secrets '+
+      '<span class="num'+(sc.secrets?" bad":"")+'">'+sc.secrets+'</span></span>'+
+      '<span class="badge">lint '+sc.lint+'</span>'+
+      '<span class="badge">slop '+sc.slop+'</span>'+
+      (sc.skipped?'<span class="badge">skipped '+sc.skipped+'</span>':'');
+  } else if(active){
+    metrics = '<span class="badge">not scanned</span>';
+  }
+  s += '<div class="card row"><span class="dot '+dot+'"></span>'+
     '<span class="name">'+esc(r.name)+'</span>'+
-    '<span class="badge '+(active?"active":"inv")+'">'+esc(r.status)+'</span></div>';
+    '<span class="badge '+(active?"active":"inv")+'">'+esc(r.status)+'</span>'+
+    metrics+'</div>';
 }
 s += '</div>';
 
@@ -217,11 +272,14 @@ def main() -> int:
     ap.add_argument("--findings", default="custos_findings.json")
     ap.add_argument("--fleet", default=os.path.join("custos", "fleet.yaml"))
     ap.add_argument("--suppressions", default="custos_suppressions.json")
+    ap.add_argument("--fleet-findings",
+                    default=os.path.join("custos", "fleet_findings.json"))
     ap.add_argument("--out", default=os.path.join("interface", "custos-dashboard.html"))
     args = ap.parse_args()
 
     model = build_model(load_json(args.findings), load_fleet(args.fleet),
-                        load_json(args.suppressions))
+                        load_json(args.suppressions),
+                        load_json(args.fleet_findings))
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(render(model))

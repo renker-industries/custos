@@ -2,6 +2,7 @@
 custos_findings.json
 custos_state.json
 custos_suppressions.json
+custos/fleet_findings.json
 custos_tasks.json
 custos_tasks.lock
 custos.config.json

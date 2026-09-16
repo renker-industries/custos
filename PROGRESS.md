@@ -65,9 +65,27 @@ Kein Baustein nur behauptet – jeder ausgeführt.
   CI-Workflow, CODEX.md. Windows-Lint-Bug (npx.cmd) gefixt + Regressionstest.
 - Version → 0.2.0.
 
+## Fleet-Scan gebaut (Lauf 2026-09-16)
+
+- `renker-flint` → `aktiv-ueberwacht`; **19 Repos** aktiv.
+- `bin/fleet_scan.py`: read-only Content-Scan (Sprach-Erkennung, Lint ruff/eslint
+  falls vorhanden, AI-Slop, Secret-Pattern). Kein Write in Fremd-Repos.
+- `bin/build_dashboard.py` erweitert: Fleet-Ansicht zeigt echte Funde aus
+  `custos/fleet_findings.json` (Severity-Ampel + secrets/lint/slop/skipped +
+  Fleet-Totals).
+- **Testlauf über 19 Repos**: totals **1 secret**, 0 lint, **7949 slop**,
+  **18 Checks übersprungen** (ruff/eslint in den meisten Repos nicht installiert).
+  - Das 1 Secret: `rencora` → `dashboard/static/tv.html:70` (generic-secret-assign,
+    redacted `TOKE***`). **Vom User zu prüfen** – read-only gemeldet, nicht
+    verändert (Fremd-Repo).
+  - Bugfix im Bau: gebündeltes `.python312`-venv in rencora wurde erst voll
+    gescannt (3989/4000 Files, 109 Falsch-Secrets) → venv/site-packages-Prune +
+    minified-Filter ergänzt, danach sauber.
+- selfqual weiterhin 16/16 grün. Kein Fremd-Repo geschrieben/committet/gepusht.
+
 ## Läuft gerade
 
-- Nichts offen. Konzept-Funktionsumfang (Phase 1–11) abgeschlossen.
+- Nichts offen. Konzept-Funktionsumfang (Phase 1–11) + Fleet-Scan abgeschlossen.
 
 ## Noch offen (bewusst, scharf-zu-schaltend/irreversibel)
 
