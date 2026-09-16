@@ -164,3 +164,20 @@ Danach genügt erneut: `gh repo create renker-industries/custos --private
   Scan. Ein späterer Push überträgt alles.
 - **Offene Punkte:** (1) Org-Zugang/Push, (2) `renker-flint` aktivieren ja/nein,
   (3) `scope.yaml` weiter leer/aus (unverändert, wie beauftragt).
+
+## NACHTRAG 2. Anlauf 2026-09-16 — BLOCKER GELÖST, veröffentlicht
+
+- Org-Zugang jetzt da (`sebastianrenker` ist Member von `renker-industries`).
+- **Repo-URL:** https://github.com/renker-industries/custos (**privat**), `main`
+  gepusht, alle bisherigen Commits übertragen. ✓
+- **Branch-Protection `main`:** NICHT aktiv — Free-Plan verbietet Protection UND
+  Rulesets auf privaten Repos (HTTP 403 "Upgrade to GitHub Pro or make public").
+  Repo bleibt bewusst privat → NICHT public gemacht. Regel-JSON liegt bereit,
+  mit einem Kommando nachziehbar sobald Pro/Team oder public. (DECISIONS.md)
+- **README:** echter Repo-Link ergänzt.
+- **Fleet (SCHRITT 2):** unverändert gültig — 18 `aktiv-ueberwacht`, `autofix:false`
+  überall; Re-Scan idempotent (0 new). **Fleet-Scan-Funde: 19 Repos inventarisiert**
+  (18 aktiv + 1 neu `renker-flint`, bleibt `nur-inventarisiert`), 0 Code-/Security-
+  Funde (scope.yaml bleibt leer/aus). custos-Remote jetzt in fleet.yaml erfasst.
+- **Offene Punkte:** (1) Branch-Protection erst mit Pro/Team oder public,
+  (2) `renker-flint` aktiv überwachen ja/nein, (3) `scope.yaml` weiter leer/aus.

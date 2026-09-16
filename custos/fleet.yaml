@@ -11,6 +11,7 @@ repos:
   path: C:\Users\Sebas\Documents\CUSTOS
   status: aktiv-ueberwacht
   autofix: false
+  remote: https://github.com/renker-industries/custos.git
 - name: New project
   path: C:\Users\Sebas\Documents\ChatGPT\New project
   status: aktiv-ueberwacht
