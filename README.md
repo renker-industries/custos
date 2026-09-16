@@ -12,6 +12,8 @@ CUSTOS ist als Claude-Code-Plugin gebaut und Teil der Renker-Industries-
 Produktfamilie – die querschnittliche Qualitäts- und Sicherheitsschicht über
 allen Projekten.
 
+**Repository:** <https://github.com/renker-industries/custos> (privat)
+
 ## Was es tut
 
 Vier Ebenen, jede auf einen realen Claude-Code-Baustein abgebildet:

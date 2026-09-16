@@ -112,3 +112,18 @@ final entschieden).
   read-only Pass, der gebaut ist, ist `bin/fleet_discover.py`. Als Fleet-Scan
   ausgeführt. Inhaltliche Detektor-/Security-Funde bleiben bewusst hinter
   `custos/scope.yaml` (leer/aus) — kein aktiver Scan, wie beauftragt.
+
+## Lauf 2026-09-16 (2. Anlauf — Org jetzt erreichbar)
+
+- **Veröffentlicht**: Org-Zugang war beim 2. Anlauf da (`sebastianrenker` ist jetzt
+  Member von `renker-industries`). Repo `renker-industries/custos` **privat**
+  angelegt + `main` gepusht.
+- **Branch-Protection NICHT gesetzt — Plan-Limit**: klassische Protection UND
+  Rulesets liefern auf privaten Repos im Free-Plan HTTP 403
+  ("Upgrade to GitHub Pro or make this repository public"). Repo bleibt bewusst
+  privat (User-Entscheidung), daher NICHT public gemacht, nur um Protection zu
+  bekommen. Aufgeschoben bis: (a) GitHub Pro/Team, oder (b) Repo wird public.
+  Gewünschte Regel (PR-Pflicht, kein Force-Push, kein Delete) liegt als
+  Ruleset-JSON bereit und ist mit einem Kommando nachziehbar.
+- **README-Repo-Link**: echten Link `https://github.com/renker-industries/custos`
+  (privat) ergänzt (vorher kein Platzhalter vorhanden).
