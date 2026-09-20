@@ -1,59 +1,59 @@
-# CUSTOS – Branding & visuelle Identität
+# CUSTOS – Branding & visual identity
 
-Quelle: `custos-konzept.md`, Abschnitt 2. Diese Datei ist die verbindliche
-Referenz für README, Interface (Roadmap-Phase 10) und ein späteres Logo.
+Source: `custos-konzept.md`, section 2. This file is the binding
+reference for the README, the interface (roadmap phase 10), and a later logo.
 
-## Name & Schreibweise
+## Name & spelling
 
-- **CUSTOS** – lateinisch für „Wächter, Hüter, Aufseher".
-- Im Fließtext **immer in Versalien**: `CUSTOS`, nie „Custos" oder „custos".
-- Im Dateipfad/Code klein: `custos/`, `custos.config.json`.
-- Log-/Report-Dateien tragen das Präfix `custos_` (z. B. `custos_findings.json`).
+- **CUSTOS** – Latin for "guardian, keeper, overseer".
+- In prose **always in caps**: `CUSTOS`, never "Custos" or "custos".
+- In the file path/code, lowercase: `custos/`, `custos.config.json`.
+- Log/report files carry the prefix `custos_` (e.g. `custos_findings.json`).
 
-## Ein-Satz-Pitch
+## One-sentence pitch
 
-> CUSTOS ist der Wächter, der jede Behauptung deines KI-Agenten in einen Beweis
-> verwandelt – bevor Code, Repo oder Server sich „fertig" nennen dürfen.
+> CUSTOS is the guardian that turns every claim of your AI agent into a proof
+> – before code, repo, or server may call themselves "done".
 
-## Tonalität
+## Tone
 
-Nüchtern, technisch, kein Marketing-Sprech. CUSTOS „verkauft" nichts, es belegt.
-Kurze, faktische Sätze statt Superlative – in Doku, README und Commit-Messages.
+Sober, technical, no marketing speak. CUSTOS "sells" nothing, it proves.
+Short, factual sentences instead of superlatives – in docs, README, and commit messages.
 
-## Naming-Konventionen (Komponenten)
+## Naming conventions (components)
 
-- Kernkomponenten kleingeschrieben, technisch benannt: `senior-dev`,
-  `plan-reviewer`, `scope-guard` – keine Fantasienamen.
+- Core components lowercase, technically named: `senior-dev`,
+  `plan-reviewer`, `scope-guard` – no fancy names.
 
-## Farbschema
+## Color scheme
 
-| Rolle | Hex | Bedeutung |
+| Role | Hex | Meaning |
 |---|---|---|
-| Grundton (Hintergrund) | `#0b0e11` | nahezu schwarzes Terminal-Theme |
-| Text | `#d8dee9` | kein reines Weiß |
-| Grün | `#2ecc71` | Beleg erbracht / Gate offen |
-| Gelb | `#f1c40f` | Warnung / Council-Fall |
-| Rot | `#e74c3c` | Gate blockiert / Fund offen |
-| Grau | `#5c6370` | inaktiv / übersprungen |
+| Base tone (background) | `#0b0e11` | near-black terminal theme |
+| Text | `#d8dee9` | not pure white |
+| Green | `#2ecc71` | proof provided / gate open |
+| Yellow | `#f1c40f` | warning / council case |
+| Red | `#e74c3c` | gate blocked / finding open |
+| Gray | `#5c6370` | inactive / skipped |
 
-## Typografie
+## Typography
 
-Monospace durchgehend – **JetBrains Mono** oder **Cascadia Code**. Passt zum
-Charakter „Terminal, kein Dashboard-Spielzeug".
+Monospace throughout – **JetBrains Mono** or **Cascadia Code**. Fits the
+character "terminal, not a dashboard toy".
 
-## Logo-Idee
+## Logo idea
 
-Einfaches, geometrisches Schild- oder Siegel-Symbol (kein Maskottchen, kein
-Tier) mit Häkchen oder Ausrufezeichen als Statusindikator, einfärbbar in
-Grün/Rot, lesbar auch als 16×16-Favicon.
+A simple, geometric shield or seal symbol (no mascot, no
+animal) with a checkmark or exclamation mark as a status indicator, colorable in
+green/red, legible even as a 16×16 favicon.
 
-## Akronym-Lesart (optional, technisch irrelevant)
+## Acronym reading (optional, technically irrelevant)
 
-C.U.S.T.O.S. als Backronym für die vier Ebenen aus Abschnitt 4:
-**C**heck, **U**nblock nur bei Beleg, **S**tatik, **T**est, **O**bservieren,
-**S**topp bei Fund.
+C.U.S.T.O.S. as a backronym for the four levels from section 4:
+**C**heck, **U**nblock only on proof, **S**tatic, **T**est, **O**bserve,
+**S**top on finding.
 
-## Interface-Design-Referenz (Roadmap-Phase 10 – jetzt NICHT bauen)
+## Interface design reference (roadmap phase 10 – do NOT build now)
 
-Verbindliche visuelle Vorlage, sobald die Interface-Phase drankommt:
+The binding visual template once the interface phase comes up:
 <https://claude.ai/design/p/e5676802-f116-4b7a-bd09-06dc8c891cc8?file=CUSTOS+Dashboard.dc.html&via=share>

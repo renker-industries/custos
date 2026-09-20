@@ -10,22 +10,22 @@ description: >-
 
 Implementation happens against an approved plan, with the gates live.
 
-## Regeln während des Baus
+## Rules during the build
 
-- **Innerhalb des Scopes bleiben.** The scope-guard blocks edits outside the
+- **Stay inside the scope.** The scope-guard blocks edits outside the
   approved scope; if you genuinely need more, widen the plan and re-approve —
   never work around the gate. The `scope-guard` agent watches for softer drift.
-- **Kleinste ausreichende Änderung.** No opportunistic refactors; those are a
+- **Smallest sufficient change.** No opportunistic refactors; those are a
   separate task.
-- **Nach jeder Änderung laufen die Gates:** ai-slop, static analysis,
+- **After every change the gates run:** ai-slop, static analysis,
   impact-analysis, a11y (frontend), db-schema (migrations). Fix what they block
   before moving on — do not accumulate red gates.
-- **DB-Änderungen** gegen das echte Schema (db-schema guard), keine erfundenen
-  Felder.
+- **DB changes** against the real schema (db-schema guard), no invented
+  fields.
 
-## Abschluss
+## Closing
 
-- Der `Stop`-Beweis-Gate verlangt einen grünen Test-/Linter-Lauf, bevor die
-  Session enden darf. Führe den Beweis aktiv aus und nenne Kommando + Ergebnis.
-- Bei Subagenten prüft der `SubagentStop`-Regressions-Wächter, dass nichts
-  vorher Grünes jetzt rot ist.
+- The `Stop` proof gate requires a green test/linter run before the
+  session may end. Run the proof actively and state the command + result.
+- For subagents, the `SubagentStop` regression guard checks that nothing
+  previously green is now red.

@@ -1,38 +1,38 @@
-# CUSTOS für Codex (funktional äquivalente Variante)
+# CUSTOS for Codex (functionally equivalent variant)
 
-Konzept-Abschnitt 14: CUSTOS soll neben Claude Code auch für **Codex** verfügbar
-sein – keine 1:1-Portierung der Dateien, aber **dieselbe Gate-Logik** in dessen
-eigenem Erweiterungs-/Konfigurationsformat.
+Concept section 14: besides Claude Code, CUSTOS should also be available for **Codex**
+– not a 1:1 port of the files, but **the same gate logic** in its
+own extension/configuration format.
 
-Diese Datei hält fest, wie die Bausteine abgebildet werden. Der eigentliche
-Codex-Adapter ist noch nicht implementiert (offener Roadmap-Punkt); die
-Detektor-/Gate-Skripte selbst sind bewusst hüllen-unabhängig geschrieben
-(stdlib-Python, JSON-Payload auf stdin, Exit-Codes) und damit wiederverwendbar.
+This file records how the building blocks are mapped. The actual
+Codex adapter is not yet implemented (an open roadmap point); the
+detector/gate scripts themselves are deliberately written shell-independently
+(stdlib Python, JSON payload on stdin, exit codes) and are therefore reusable.
 
-## Abbildung der Ebenen
+## Mapping of the levels
 
-| CUSTOS-Baustein (Claude Code) | Codex-Entsprechung (Zielbild) |
+| CUSTOS building block (Claude Code) | Codex equivalent (target picture) |
 |---|---|
-| `hooks/hooks.json` (Hook-Events) | Codex-eigene Hook-/Event-Konfiguration, gleiche Events (vor/nach Tool-Aufruf, Sessionende) |
-| Default-Agent via `settings.json: "agent"` | Codex-System-Prompt/Profil für den Senior-Dev |
-| Subagents (`agents/*.md`) | Codex-Rollen/Profile mit denselben Beschreibungen |
-| Skills (`skills/*/SKILL.md`) | Codex-Modus-Prompts |
-| Detektoren (`detectors/*.py`, `bin/*.py`) | **unverändert wiederverwendbar** – reine CLI-Skripte |
+| `hooks/hooks.json` (hook events) | Codex's own hook/event configuration, same events (before/after tool call, session end) |
+| Default agent via `settings.json: "agent"` | Codex system prompt/profile for the senior dev |
+| Subagents (`agents/*.md`) | Codex roles/profiles with the same descriptions |
+| Skills (`skills/*/SKILL.md`) | Codex mode prompts |
+| Detectors (`detectors/*.py`, `bin/*.py`) | **reusable unchanged** – pure CLI scripts |
 
-## Wiederverwendbarkeit der Skripte
+## Reusability of the scripts
 
-Alle Gate-/Detektor-Skripte:
+All gate/detector scripts:
 
-- lesen den Tool-/Event-Payload als **JSON auf stdin**,
-- signalisieren Blockade über **Exit-Code 2** (+ stderr-Begründung),
-- schreiben Funde nach `custos_findings.json`.
+- read the tool/event payload as **JSON on stdin**,
+- signal a block via **exit code 2** (+ stderr rationale),
+- write findings to `custos_findings.json`.
 
-Ein Codex-Adapter muss daher nur die Codex-Events auf denselben stdin/Exit-Code-
-Vertrag mappen; die Prüf-Logik bleibt identisch. Damit ist die Beweislogik
-plattformübergreifend gleich, nur die Hülle unterscheidet sich.
+A Codex adapter therefore only needs to map the Codex events onto the same stdin/exit-code
+contract; the checking logic stays identical. This makes the proof logic
+the same across platforms, only the shell differs.
 
 ## Status
 
-- [x] Skripte hüllen-unabhängig (stdin-JSON / Exit-Code / Findings-Log).
-- [ ] Codex-Event-Adapter (Mapping der Codex-Hooks auf den Skript-Vertrag).
-- [ ] Codex-Profile für Agenten/Modi.
+- [x] Scripts shell-independent (stdin JSON / exit code / findings log).
+- [ ] Codex event adapter (mapping the Codex hooks onto the script contract).
+- [ ] Codex profiles for agents/modes.

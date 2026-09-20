@@ -11,19 +11,19 @@ A plan under CUSTOS is not a wish list — it is the contract the build is measu
 against. The `plan_gate` blocks `ExitPlanMode` until the `plan-reviewer` approves,
 so write the plan to survive that review.
 
-## Der Plan muss enthalten
+## The plan must contain
 
-1. **Ziel & Fertig-Kriterium** — observable, testable.
+1. **Goal & done criterion** — observable, testable.
 2. **Scope** — exactly which files/modules will change (this becomes the approved
    scope the scope-guard enforces). Name what is explicitly out of scope.
-3. **Schritte** — small, ordered, each independently verifiable.
-4. **Sicherheit** — for every touched security surface, the control that covers it.
-5. **DB-Auswirkung** — any schema/migration change, checked against the real
+3. **Steps** — small, ordered, each independently verifiable.
+4. **Security** — for every touched security surface, the control that covers it.
+5. **DB impact** — any schema/migration change, checked against the real
    schema (db-schema guard), no invented fields.
-6. **Betroffene Module / Aufrufer** — who calls the code being changed.
-7. **Beweisplan** — the exact test/linter/check that will prove each part.
+6. **Affected modules / callers** — who calls the code being changed.
+7. **Proof plan** — the exact test/linter/check that will prove each part.
 
-## Freigabe
+## Approval
 
 - Route the finished plan to the `plan-reviewer` agent.
 - On `APPROVED`, record it: `python bin/custos_approve_plan.py --scope "<glob>" ...`

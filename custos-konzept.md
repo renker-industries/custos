@@ -1,327 +1,327 @@
-# Konzept: CUSTOS – ein Beweis-basiertes Guardrail-System für Claude Code
+# Concept: CUSTOS – a proof-based guardrail system for Claude Code
 
-> Vormals Arbeitstitel "Guardian". Angelehnt an die Grundidee aus dem Video (Code Guardian, Profimedia/Promptgeflüster), aber technisch eigenständig auf reale Claude-Code-Bausteine (Skills, Hooks, Subagents, Plugins) heruntergebrochen und unter eigenem Namen als Teil der Renker-Industries-Produktfamilie weiterentwickelt. Business-Aspekte des Vorbilds (Verkauf, Community, Preise) sind bewusst ausgeklammert – es geht um die technische Architektur und um ein eigenständiges, veröffentlichungsfähiges Projekt.
+> Formerly the working title "Guardian". Inspired by the basic idea from the video (Code Guardian, Profimedia/Promptgeflüster), but technically independent, broken down to real Claude Code building blocks (skills, hooks, subagents, plugins) and developed further under its own name as part of the Renker Industries product family. Business aspects of the model (sales, community, prices) are deliberately excluded – this is about the technical architecture and about a standalone, publishable project.
 
-## 1. Kernidee in einem Satz
+## 1. Core idea in one sentence
 
-Ein KI-Coding-Agent behauptet gerne, dass etwas fertig, korrekt oder sicher ist. CUSTOS sorgt dafür, dass er das an jeder relevanten Stelle im Ablauf **belegen muss** – mit einem ausgeführten Kommando (Linter, Testlauf, Statik-Check, Schema-Abgleich), nicht mit einem Satz in der Antwort.
+An AI coding agent likes to claim that something is done, correct, or secure. CUSTOS ensures that it must **prove** this at every relevant point in the flow – with an executed command (linter, test run, static check, schema comparison), not with a sentence in the answer.
 
-Alles Weitere im System ist nur die Antwort auf die Frage: *An welcher Stelle im Ablauf wird welcher Beleg verlangt, von wem, und was passiert, wenn er fehlt?*
+Everything else in the system is only the answer to the question: *At which point in the flow is which proof required, from whom, and what happens if it is missing?*
 
-## 2. Branding & Identität
+## 2. Branding & identity
 
-**Name:** CUSTOS – lateinisch für „Wächter, Hüter, Aufseher". Kurz, sprechbar, auf GitHub als Repo-Name frei, keine Kollision mit einer bekannten Entwickler-Marke.
+**Name:** CUSTOS – Latin for "guardian, keeper, overseer". Short, pronounceable, free as a repo name on GitHub, no collision with a well-known developer brand.
 
-**Ein-Satz-Pitch:** *CUSTOS ist der Wächter, der jede Behauptung deines KI-Agenten in einen Beweis verwandelt – bevor Code, Repo oder Server sich „fertig" nennen dürfen.*
+**One-sentence pitch:** *CUSTOS is the guardian that turns every claim of your AI agent into a proof – before code, repo, or server may call themselves "done".*
 
-**Tonalität:** nüchtern, technisch, kein Marketing-Sprech. CUSTOS "verkauft" nichts, es belegt. Das sollte sich auch in Doku, README und Commit-Messages widerspiegeln – kurze, faktische Sätze statt Superlative.
+**Tone:** sober, technical, no marketing speak. CUSTOS "sells" nothing, it proves. This should also be reflected in docs, README, and commit messages – short, factual sentences instead of superlatives.
 
-**Naming-Konventionen innerhalb des Projekts** (damit es sich konsistent anfühlt, wenn später mehr Leute reinschauen):
-- Kernkomponenten in Kleinbuchstaben, technisch benannt: `senior-dev`, `plan-reviewer`, `scope-guard` (siehe Abschnitt 6) – keine Fantasienamen für einzelne Bausteine.
-- CUSTOS selbst immer in Versalien geschrieben (wie ein Eigenname/Akronym-Charakter), nie „Custos" oder „custos" in Fließtext – nur im Dateipfad/Code klein (`custos/`, `custos.config.yaml`).
-- Log- und Report-Dateien tragen das Präfix `custos_` (z. B. `custos_findings.json`), damit sie in einem Repo mit vielen anderen Tools eindeutig zuordenbar bleiben.
+**Naming conventions within the project** (so that it feels consistent when more people look in later):
+- Core components in lowercase, technically named: `senior-dev`, `plan-reviewer`, `scope-guard` (see section 6) – no fancy names for individual building blocks.
+- CUSTOS itself always written in caps (like a proper name/acronym character), never "Custos" or "custos" in prose – only lowercase in the file path/code (`custos/`, `custos.config.yaml`).
+- Log and report files carry the prefix `custos_` (e.g. `custos_findings.json`), so that they remain uniquely identifiable in a repo with many other tools.
 
-**Visuelle Identität (Basis für das Interface, Abschnitt 18, und ein späteres Logo):**
+**Visual identity (basis for the interface, section 18, and a later logo):**
 
-| Element | Festlegung |
+| Element | Definition |
 |---|---|
-| Grundton | Dunkles Terminal-Theme: nahezu schwarzer Hintergrund (`#0b0e11`), keine reinen Weißtöne im Text (`#d8dee9`) |
-| Statusfarben | Grün `#2ecc71` = Beleg erbracht/Gate offen, Gelb `#f1c40f` = Warnung/Council-Fall, Rot `#e74c3c` = Gate blockiert/Fund offen, Grau `#5c6370` = inaktiv/übersprungen |
-| Typografie | Monospace durchgehend (z. B. JetBrains Mono / Cascadia Code) – passt zum "Terminal, kein Dashboard-Spielzeug"-Charakter |
-| Logo-Idee | Ein einfaches, geometrisches Schild- oder Siegel-Symbol (kein Maskottchen, kein Tier) mit einem Häkchen oder Ausrufezeichen als Statusindikator, das sich in Grün/Rot einfärbt – lesbar auch als 16×16-Favicon |
-| Akronym-Lesart | C.U.S.T.O.S. kann intern als Backronym für die vier Ebenen aus Abschnitt 4 stehen (**C**heck, **U**nblock nur bei Beleg, **S**tatik, **T**est, **O**bservieren, **S**topp bei Fund) – optional, nur falls es später fürs Marketing/README gebraucht wird, technisch irrelevant
+| Base tone | Dark terminal theme: near-black background (`#0b0e11`), no pure white in text (`#d8dee9`) |
+| Status colors | Green `#2ecc71` = proof provided/gate open, yellow `#f1c40f` = warning/council case, red `#e74c3c` = gate blocked/finding open, gray `#5c6370` = inactive/skipped |
+| Typography | Monospace throughout (e.g. JetBrains Mono / Cascadia Code) – fits the "terminal, not a dashboard toy" character |
+| Logo idea | A simple, geometric shield or seal symbol (no mascot, no animal) with a checkmark or exclamation mark as a status indicator that colors green/red – legible even as a 16×16 favicon |
+| Acronym reading | C.U.S.T.O.S. can internally stand as a backronym for the four levels from section 4 (**C**heck, **U**nblock only on proof, **S**tatic, **T**est, **O**bserve, **S**top on finding) – optional, only if needed later for marketing/README, technically irrelevant |
 
-## 3. Einordnung in die Renker-Infrastruktur
+## 3. Placement in the Renker infrastructure
 
-CUSTOS ist kein Insel-Projekt, sondern die **querschnittliche Qualitäts- und Sicherheitsschicht**, die über alle Renker-Industries-Projekte gelegt wird (RenkerNet, RENCORA/LOKARA, BASI2 und alles, was noch dazukommt). Statt für jedes Projekt eigene Lint-/Security-Regeln zu pflegen, installiert man CUSTOS einmal, und es gilt für jedes Repo, das im Fleet-Modus (Abschnitt 10) registriert ist.
+CUSTOS is not an island project, but the **cross-cutting quality and security layer** placed over all Renker Industries projects (RenkerNet, RENCORA/LOKARA, BASI2, and everything else that comes along). Instead of maintaining separate lint/security rules for each project, you install CUSTOS once, and it applies to every repo registered in fleet mode (section 10).
 
-Praktische Konsequenzen für die Struktur:
-- **Ein zentrales Konfigurations-Repo** (z. B. `renker-industries/custos-config`) enthält die Soll-Standards (Linter-Regeln, Schwellwerte, Scope-Datei), die alle anderen Repos referenzieren – Änderungen an den Regeln passieren an einer Stelle, nicht in jedem Projekt einzeln.
-- **GitHub-Organisation statt Einzel-Repos unter dem privaten Account**, falls noch nicht vorhanden: `renker-industries` als Org, CUSTOS als eines der ersten öffentlich sichtbaren Repos darin – das macht auf GitHub sofort klar, dass es Teil einer zusammenhängenden Produktfamilie ist, nicht ein loses Einzelprojekt.
-- **Gemeinsame README-Bausteine** (Badge-Stil, Lizenz-Hinweis, Kontakt/Impressum) über alle Renker-Repos hinweg, damit ein Besucher, der von RenkerNet zu CUSTOS klickt, eine wiedererkennbare Handschrift sieht.
+Practical consequences for the structure:
+- **A central configuration repo** (e.g. `renker-industries/custos-config`) contains the target standards (linter rules, thresholds, scope file) that all other repos reference – changes to the rules happen in one place, not in each project individually.
+- **A GitHub organization instead of individual repos under the private account**, if not yet present: `renker-industries` as the org, CUSTOS as one of the first publicly visible repos in it – this makes clear on GitHub immediately that it is part of a coherent product family, not a loose individual project.
+- **Shared README building blocks** (badge style, license note, contact/imprint) across all Renker repos, so that a visitor clicking from RenkerNet to CUSTOS sees a recognizable signature.
 
-## 4. Die vier Ebenen
+## 4. The four levels
 
-Jede der vier gedanklichen Ebenen lässt sich 1:1 auf einen Claude-Code-Baustein abbilden:
+Each of the four conceptual levels maps 1:1 to a Claude Code building block:
 
-| Ebene | Frage | Claude-Code-Baustein |
+| Level | Question | Claude Code building block |
 |---|---|---|
-| **Haltung** | Wie wird eine Aufgabe überhaupt angefasst? | Ein Default-Subagent (`settings.json: "agent"`) mit Senior-Dev-Systemprompt, der jede Session eröffnet |
-| **Reflexe** | Was muss an dieser Stelle geprüft werden? | `UserPromptSubmit`- und `PreToolUse`-Hooks, die Kontext einspeisen bzw. Rückfragen erzwingen |
-| **Mechanik** | Was wird technisch verhindert? | `PreToolUse`/`PostToolUse`-Hooks, die Linter/Statik-Tools ausführen und bei Exit-Code 2 blocken |
-| **Beweise** | Ist es nachweislich korrekt? | `Stop`/`SubagentStop`-Hooks, die Messskripte (Tests, Linter, Typecheck) erzwingen, bevor die Session enden darf |
+| **Stance** | How is a task approached at all? | A default subagent (`settings.json: "agent"`) with a senior-dev system prompt that opens every session |
+| **Reflexes** | What must be checked at this point? | `UserPromptSubmit` and `PreToolUse` hooks that feed in context or enforce follow-up questions |
+| **Mechanics** | What is technically prevented? | `PreToolUse`/`PostToolUse` hooks that run linters/static tools and block on exit code 2 |
+| **Proofs** | Is it demonstrably correct? | `Stop`/`SubagentStop` hooks that enforce measurement scripts (tests, linter, typecheck) before the session may end |
 
-Diese Zuordnung ist der rote Faden für das gesamte restliche Konzept.
+This mapping is the common thread for the entire rest of the concept.
 
-## 5. Paketierung: ein Claude-Code-Plugin
+## 5. Packaging: a Claude Code plugin
 
-CUSTOS wird als ein einziges Plugin gebaut, das per Marketplace oder `--plugin-dir` installiert wird:
+CUSTOS is built as a single plugin, installed via a marketplace or `--plugin-dir`:
 
 ```
 custos/
 ├── .claude-plugin/
 │   └── plugin.json            # name: "custos"
-├── settings.json              # setzt den Senior-Dev-Agent als Default-Agent
+├── settings.json              # sets the senior-dev agent as the default agent
 ├── agents/
-│   ├── senior-dev.md          # Default-Hauptagent ("Haltung")
+│   ├── senior-dev.md          # default main agent ("Stance")
 │   ├── plan-reviewer.md
 │   ├── scope-guard.md
-│   ├── root-cause.md          # "Kausalanalyse" für den Debug-Modus
-│   ├── council-advisor.md     # 5x instanziiert für das LLM-Council
+│   ├── root-cause.md          # "root-cause analysis" for debug mode
+│   ├── council-advisor.md     # instantiated 5× for the LLM council
 │   ├── council-chair.md
-│   └── plain-text-translator.md  # "Entscheidungsklartext"
+│   └── plain-text-translator.md  # "decision plain text"
 ├── skills/
-│   ├── grill-me/SKILL.md      # stellt Rückfragen vor der Planung
+│   ├── grill-me/SKILL.md      # asks follow-up questions before planning
 │   ├── plan-mode/SKILL.md
 │   ├── build-mode/SKILL.md
 │   ├── debug-mode/SKILL.md
 │   ├── cleanup-mode/SKILL.md
 │   ├── data-analytics-mode/SKILL.md
-│   └── fleet-mode/SKILL.md    # siehe Abschnitt 10
+│   └── fleet-mode/SKILL.md    # see section 10
 ├── hooks/
-│   └── hooks.json             # alle Gates, siehe Abschnitt 8
-├── detectors/                 # Statik-Analyse-Skripte, sprachspezifisch
+│   └── hooks.json             # all gates, see section 8
+├── detectors/                 # static-analysis scripts, language-specific
 │   ├── ai_slop_detector.py
 │   ├── impact_analysis.py
 │   ├── db_schema_guard.py
 │   └── a11y_frontend_check.py
-├── bin/                       # CLI-Wrapper, die die Hooks aufrufen
+├── bin/                       # CLI wrappers that call the hooks
 └── monitors/
-    └── monitors.json          # Multi-Session- und Fleet-Orchestrator
+    └── monitors.json          # multi-session and fleet orchestrator
 ```
 
-`plugin.json` referenziert außerdem, dass es **zwei Varianten** gibt: eine für Claude Code (dieses Konzept) und separat eine funktional äquivalente für Codex (dort über dessen eigenes Extension-Format, keine 1:1-Portierung der Dateien, aber gleiche Logik).
+`plugin.json` also references that there are **two variants**: one for Claude Code (this concept) and, separately, a functionally equivalent one for Codex (there via its own extension format, not a 1:1 port of the files, but the same logic).
 
-## 6. Kernrollen (Subagents)
+## 6. Core roles (subagents)
 
-| Subagent | Aufgabe | Modell/Effort |
+| Subagent | Task | Model/effort |
 |---|---|---|
-| **Senior Developer** (Default-Agent) | Öffnet jede Session, entscheidet: trivial oder planungspflichtig, delegiert weiter | Standard |
-| **Plan Reviewer** | Prüft jeden fertigen Plan gegen Scope, Sicherheitsstandards, Vollständigkeit, bevor `ExitPlanMode` erlaubt wird | Hoch |
-| **Scope Guard** | Läuft während Build-Mode mit, erkennt Scope Drift (Aufgabe wird größer als beauftragt) | Standard |
-| **Root-Cause-Agent** | Debug-Modus: verwirft die erste plausible Fehlerursache nicht sofort, prüft aktiv nach Alternativursachen | Hoch (X-High) |
-| **Council-Advisor ×5** | Werden bei Uneinigkeit zwischen Statik-Analyse und Modellentscheidung parallel befragt | Mittel |
-| **Council-Chair** | Fasst die fünf Advisor-Meinungen zusammen und trifft die verbindliche Entscheidung | Hoch |
-| **Plain-Text-Translator** | Übersetzt technische Rückfragen/Prompts in einfache, für Nicht-Entwickler verständliche Sprache | Niedrig |
+| **Senior Developer** (default agent) | Opens every session, decides: trivial or requires planning, delegates onward | Standard |
+| **Plan Reviewer** | Checks every finished plan against scope, security standards, completeness, before `ExitPlanMode` is allowed | High |
+| **Scope Guard** | Runs alongside build mode, detects scope drift (the task grows larger than commissioned) | Standard |
+| **Root-Cause Agent** | Debug mode: does not immediately discard the first plausible cause of an error, actively checks for alternative causes | High (X-High) |
+| **Council Advisor ×5** | Consulted in parallel when static analysis and the model decision disagree | Medium |
+| **Council Chair** | Summarizes the five advisor opinions and makes the binding decision | High |
+| **Plain-Text Translator** | Translates technical follow-up questions/prompts into simple language understandable by non-developers | Low |
 
-Jeder dieser Agenten ist eine `.claude/agents/*.md`-Datei mit eigenem `description`-Feld, über das der Senior-Dev-Hauptagent automatisch dorthin delegiert (via `Agent`-Tool) – keine manuelle Umschaltung nötig.
+Each of these agents is a `.claude/agents/*.md` file with its own `description` field, via which the senior-dev main agent delegates to it automatically (via the `Agent` tool) – no manual switching needed.
 
-## 7. Modi als Skills, Übergänge als Gates
+## 7. Modes as skills, transitions as gates
 
-Die Modi aus dem Vorbild (Plan, Build, Debug, Cleanup, Data-Analytics, plus neu Fleet, siehe Abschnitt 10) werden als Skills umgesetzt, deren *Übergänge* – nicht ihr Inhalt – von Hooks erzwungen werden. Das ist der entscheidende Punkt: die Modi selbst sind nur Systemprompts, die **Gates dazwischen** sind der eigentliche Mechanismus.
+The modes from the model (plan, build, debug, cleanup, data-analytics, plus the new fleet, see section 10) are implemented as skills whose *transitions* – not their content – are enforced by hooks. That is the decisive point: the modes themselves are only system prompts, the **gates between them** are the actual mechanism.
 
-**Ablauf einer Aufgabe:**
+**Flow of a task:**
 
-1. `UserPromptSubmit`-Hook prüft: ist die Aufgabe trivial (Ein-Zeilen-Fix) oder braucht sie einen Plan? Bei Unklarheit lädt er die `grill-me`-Skill, die gezielte Rückfragen stellt, bevor überhaupt geplant wird.
-2. Plan-Mode-Skill erstellt den Plan; der **Plan-Reviewer**-Subagent bewertet ihn gegen eine Checkliste (Sicherheit, Umfang, DB-Auswirkungen, betroffene Module).
-3. Erst nach Freigabe darf `ExitPlanMode` aufgerufen werden – ein `PreToolUse`-Hook auf genau dieses Tool ist das technische Gate dafür.
-4. Build-Mode: Der **Scope-Guard** vergleicht jede Dateiänderung gegen den freigegebenen Plan-Umfang. Bei DB-Änderungen erzwingt `db_schema_guard.py` (per `PreToolUse` auf `Write`/`Edit` an Migrationsdateien) einen Abgleich gegen das echte, aktuelle Datenbankschema – keine erfundenen Felder.
-5. Nach jeder Code-Änderung läuft `PostToolUse` → `ai_slop_detector.py` (Muster wie unnötige Abstraktionen, Duplicate Code, generische Variablennamen, überflüssige Kommentare) sowie sprachspezifische Statik-Tools (z. B. ESLint/TypeScript, Ruff/mypy, PHPStan).
-6. Am Ende eines Arbeitsschritts verlangt der `Stop`-Hook einen **Beleg**: Testlauf, Linter-Ergebnis, Typecheck – ohne grünen Exit-Code kein Sessionende. Zusätzlich wird das interne To-Do erneut mit dem Plan abgeglichen.
+1. The `UserPromptSubmit` hook checks: is the task trivial (a one-line fix) or does it need a plan? If unclear, it loads the `grill-me` skill, which asks targeted follow-up questions before any planning.
+2. The plan-mode skill creates the plan; the **plan-reviewer** subagent assesses it against a checklist (security, scope, DB impact, affected modules).
+3. Only after approval may `ExitPlanMode` be called – a `PreToolUse` hook on exactly this tool is the technical gate for it.
+4. Build mode: the **scope-guard** compares every file change against the approved plan scope. For DB changes, `db_schema_guard.py` (via `PreToolUse` on `Write`/`Edit` of migration files) enforces a comparison against the real, current database schema – no invented fields.
+5. After every code change, `PostToolUse` runs → `ai_slop_detector.py` (patterns such as unnecessary abstractions, duplicate code, generic variable names, superfluous comments) as well as language-specific static tools (e.g. ESLint/TypeScript, Ruff/mypy, PHPStan).
+6. At the end of a work step, the `Stop` hook demands a **proof**: test run, linter result, typecheck – without a green exit code, no session end. Additionally, the internal to-do is reconciled with the plan again.
 
-Debug-Mode ist ein Sonderfall: Der Root-Cause-Agent stoppt nicht bei der ersten gefundenen Fehlerursache, sondern prüft per Checkliste aktiv, ob eine plausiblere zweite Ursache existiert, bevor ein Fix vorgeschlagen wird.
+Debug mode is a special case: the root-cause agent does not stop at the first cause found, but actively checks via checklist whether a more plausible second cause exists before a fix is proposed.
 
-Data-Analytics-Mode fügt eine zusätzliche Beweispflicht hinzu: Vor jeder Aussage über Daten wird geprüft, wie ein Wert berechnet wurde und ob er aus mehreren Blickwinkeln konsistent ist – analog zum Code-Beweis, nur für Zahlen statt für Funktionen.
+Data-analytics mode adds an additional proof obligation: before any statement about data, it is checked how a value was computed and whether it is consistent from multiple angles – analogous to the code proof, only for numbers instead of functions.
 
-## 8. Gates im Detail (Hook-Zuordnung)
+## 8. Gates in detail (hook mapping)
 
-| Gate | Hook-Event | Matcher | Aktion bei Verstoß |
+| Gate | Hook event | Matcher | Action on violation |
 |---|---|---|---|
-| Trivial-Schranke | `UserPromptSubmit` | – | Injiziert `additionalContext`: "Plan nötig? [ja/nein]" |
-| Plan-Freigabe | `PreToolUse` | `ExitPlanMode` | Exit 2, solange Plan-Reviewer nicht zugestimmt hat |
-| Scope-Wächter | `PreToolUse` | `Write\|Edit` | Warnung/Block, wenn Datei außerhalb des Plan-Scopes liegt |
-| DB-Schema-Guard | `PreToolUse` | `Write\|Edit` auf Migrations-/Schemadateien | Block, wenn referenzierte Felder nicht im echten Schema existieren |
-| AI-Slop-Detektor | `PostToolUse` | `Write\|Edit` | `additionalContext` mit Fundstellen; ab Schwellwert Exit 2 |
-| Statik-Analyse | `PostToolUse` | `Write\|Edit` | Linter/Typecheck pro Sprache, Exit 2 bei Fehlern |
-| Impact-Analyse | `PostToolUse` | `Write\|Edit` | Sucht Aufrufer der geänderten Funktion, warnt bei nicht angepassten Stellen |
-| A11y/Frontend-Check | `PostToolUse` | `*.tsx\|*.jsx\|*.vue\|*.html` | Kontrast, Fokus-Reihenfolge, ARIA-Basics |
-| Beweis-Pflicht | `Stop` | – | Exit 2, bis Testlauf/Linter mit Erfolg dokumentiert ist |
-| Regressions-Wächter | `SubagentStop` | – | Vergleicht Vorher/Nachher-Testergebnisse, blockt bei neuen Fehlschlägen |
+| Trivial barrier | `UserPromptSubmit` | – | Injects `additionalContext`: "Plan needed? [yes/no]" |
+| Plan approval | `PreToolUse` | `ExitPlanMode` | Exit 2 as long as the plan reviewer has not agreed |
+| Scope guard | `PreToolUse` | `Write\|Edit` | Warning/block if the file is outside the plan scope |
+| DB schema guard | `PreToolUse` | `Write\|Edit` on migration/schema files | Block if referenced fields do not exist in the real schema |
+| AI-slop detector | `PostToolUse` | `Write\|Edit` | `additionalContext` with findings; exit 2 above a threshold |
+| Static analysis | `PostToolUse` | `Write\|Edit` | Linter/typecheck per language, exit 2 on errors |
+| Impact analysis | `PostToolUse` | `Write\|Edit` | Searches callers of the changed function, warns about unadjusted spots |
+| A11y/frontend check | `PostToolUse` | `*.tsx\|*.jsx\|*.vue\|*.html` | Contrast, focus order, ARIA basics |
+| Proof obligation | `Stop` | – | Exit 2 until a test run/linter is documented as successful |
+| Regression guard | `SubagentStop` | – | Compares before/after test results, blocks on new failures |
 
-Alle Detektoren sind eigenständige Skripte unter `detectors/`, die Hooks rufen sie nur auf – so bleiben sie unabhängig testbar und pro Sprache austauschbar.
+All detectors are standalone scripts under `detectors/`; the hooks only call them – so they stay independently testable and swappable per language.
 
-## 9. Statische Analyse als zweite, unabhängige Instanz
+## 9. Static analysis as a second, independent authority
 
-Wichtig am Vorbild: die Prüfung läuft nicht nur "die KI schaut sich den Code nochmal an", sondern über echte statische Analyse-Bibliotheken, die unabhängig vom Sprachmodell urteilen:
+Important about the model: the check does not only run "the AI looks at the code again", but via real static-analysis libraries that judge independently of the language model:
 
 - TypeScript/JavaScript: ESLint + `tsc --noEmit`
-- Python: Ruff + mypy (auch für die CUSTOS-eigenen Skripte – Selbstanwendung)
+- Python: Ruff + mypy (also for CUSTOS's own scripts – self-application)
 - PHP: PHPStan
-- Frontend/Accessibility: axe-core oder vergleichbares CLI-Tool, Kontrast-Check gegen WCAG-Werte
+- Frontend/accessibility: axe-core or a comparable CLI tool, contrast check against WCAG values
 
-Bei Widerspruch zwischen Statik-Befund und Modell-Einschätzung entscheidet nicht automatisch die Statik – hier kommt das **Code-Council** (Abschnitt 6) ins Spiel: fünf Advisor-Instanzen bewerten den Fall unabhängig, der Chair-Agent trifft die Entscheidung und dokumentiert die Begründung im Log.
+On a contradiction between a static finding and the model's assessment, static analysis does not automatically decide – this is where the **code council** (section 6) comes in: five advisor instances assess the case independently, the chair agent makes the decision and documents the rationale in the log.
 
-## 10. Fleet-Modus: andere lokale Repos & GitHub prüfen und bearbeiten
+## 10. Fleet mode: check and edit other local repos & GitHub
 
-CUSTOS soll sich nicht auf das Projekt beschränken, in dem es gerade läuft, sondern auf Wunsch **die gesamte eigene Software-Flotte** abdecken: andere Git-Repos auf dem PC, alle Repos im GitHub-Account/der Org, perspektivisch auch Server/Pis (deren Konfigurationsrepos bzw. deployter Code).
+CUSTOS should not be limited to the project it is currently running in, but on request cover **the entire own software fleet**: other Git repos on the PC, all repos in the GitHub account/org, and in perspective also servers/Pis (their config repos or deployed code).
 
-**10.1 Repo-Inventar aufbauen**
-- Lokal: ein Discovery-Lauf durchsucht konfigurierte Wurzelverzeichnisse (z. B. `~/Projects`, `~/Documents`, alles unter definierten Ordnern) nach `.git`-Verzeichnissen und trägt Fundstellen in `custos/fleet.yaml` ein.
-- GitHub: `gh repo list <account-oder-org> --json name,visibility,defaultBranch` baut die Liste aller Remote-Repos; private wie öffentliche werden erfasst, aber getrennt markiert.
-- Jeder Eintrag bekommt einen Status: `aktiv überwacht`, `nur inventarisiert` (noch nicht freigegeben), `ignoriert` (bewusst ausgeschlossen, z. B. Forks fremder Projekte).
+**10.1 Build a repo inventory**
+- Local: a discovery run searches configured root directories (e.g. `~/Projects`, `~/Documents`, everything under defined folders) for `.git` directories and enters findings in `custos/fleet.yaml`.
+- GitHub: `gh repo list <account-or-org> --json name,visibility,defaultBranch` builds the list of all remote repos; private and public are captured, but marked separately.
+- Each entry gets a status: `actively monitored`, `inventoried only` (not yet released), `ignored` (deliberately excluded, e.g. forks of others' projects).
 
-**10.2 Prüfung pro Repo**
-Für jedes als „aktiv überwacht" markierte Repo wendet CUSTOS dieselben Gates an wie im eigenen Projekt (Statik-Analyse, AI-Slop-Detektor, Secret-Scan aus Abschnitt 15), aber **read-only per Default**: es wird zuerst nur ein Befund-Report erzeugt, keine automatische Änderung. Automatisches Bearbeiten (Auto-Fix-Commits, Dependency-Updates) ist ein expliziter Opt-in pro Repo in `fleet.yaml` – nie ein globaler Schalter, damit nicht versehentlich in ein sensibles/fremdes Repo geschrieben wird.
+**10.2 Check per repo**
+For each repo marked "actively monitored", CUSTOS applies the same gates as in its own project (static analysis, AI-slop detector, secret scan from section 15), but **read-only by default**: first only a findings report is generated, no automatic change. Automatic editing (auto-fix commits, dependency updates) is an explicit opt-in per repo in `fleet.yaml` – never a global switch, so that nothing is accidentally written into a sensitive/foreign repo.
 
-**10.3 Bearbeitung, wenn freigegeben**
-Bei freigegebenen Repos kann CUSTOS eigenständig Fixes vorschlagen: kleine, klar abgegrenzte Änderungen (z. B. veraltete Dependency, fehlender Linter-Fix) direkt als Branch + Pull Request statt als Direct-Push auf den Hauptbranch – so bleibt jede automatische Änderung überprüfbar und rückgängig machbar, auch wenn niemand zeitnah hinschaut.
+**10.3 Editing, when released**
+For released repos, CUSTOS can propose fixes on its own: small, clearly delimited changes (e.g. an outdated dependency, a missing linter fix) directly as a branch + pull request instead of a direct push to the main branch – so every automatic change stays reviewable and reversible, even if no one looks promptly.
 
-**10.4 Zentrales Dashboard**
-Die Ergebnisse aller Repos laufen in einem gemeinsamen Report zusammen (Basis für das Interface, Abschnitt 18): eine Übersicht „Repo → letzter Scan → offene Funde → Zero-Tolerance-Status" statt eines Reports pro Repo einzeln.
+**10.4 Central dashboard**
+The results of all repos converge into a shared report (the basis for the interface, section 18): an overview of "repo → last scan → open findings → zero-tolerance status" instead of a separate report per repo.
 
-**10.5 Sicherheitsschranke**
-Der Fleet-Modus nutzt dieselbe Scope-Datei-Logik wie Abschnitt 15.1: nur Repos, die explizit eingetragen sind, werden angefasst. Kein automatisches „alles was ich auf GitHub finde" ohne diese Freigabeliste – sonst reicht ein falsch konfigurierter Zugriffstoken, um versehentlich in fremden oder öffentlichen Repos Dritter zu schreiben.
+**10.5 Security barrier**
+Fleet mode uses the same scope-file logic as section 15.1: only repos explicitly listed are touched. No automatic "everything I find on GitHub" without this allowlist – otherwise a misconfigured access token is enough to accidentally write into foreign or public third-party repos.
 
-## 11. Multi-Session-Orchestrierung
+## 11. Multi-session orchestration
 
-Ziel: Wenn mehrere Claude-Code-Sessions am selben Projekt (oder in mehreren Fleet-Repos parallel) offen sind, sollen Aufgaben koordiniert statt kollidierend verteilt werden. Technisch realistisch umsetzbar über:
+Goal: when several Claude Code sessions are open on the same project (or in several fleet repos in parallel), tasks should be distributed in a coordinated rather than colliding way. Technically realistic via:
 
-1. **Isolation**: Jede Session/jeder Subagent, der parallel schreibt, läuft in einem eigenen Git-Worktree (`Agent`-Tool mit `isolation:worktree`) – keine Datei-Kollisionen.
-2. **Koordination**: Ein `monitors/monitors.json`-Prozess des Plugins hält eine gemeinsame Task-Queue-Datei (oder einen kleinen lokalen MCP-Server) aktuell, den alle Sessions lesen/schreiben.
-3. **Zuteilung**: Der Senior-Dev-Agent prüft beim Sessionstart (`SessionStart`-Hook) die Queue und übernimmt nur freie Aufgaben; erledigte Aufgaben werden mit Beweis-Verweis (Testlauf-ID) markiert.
-4. **Zusammenführung**: Merges laufen über normale Git-Workflows (Branch pro Worktree, PR/Merge nach bestandenem Beweis-Gate).
+1. **Isolation**: every session/subagent writing in parallel runs in its own Git worktree (`Agent` tool with `isolation:worktree`) – no file collisions.
+2. **Coordination**: a `monitors/monitors.json` process of the plugin keeps a shared task-queue file (or a small local MCP server) up to date, which all sessions read/write.
+3. **Assignment**: the senior-dev agent checks the queue at session start (`SessionStart` hook) and takes only free tasks; completed tasks are marked with a proof reference (test-run ID).
+4. **Merging**: merges run via normal Git workflows (a branch per worktree, PR/merge after the proof gate passes).
 
-Das ist kein magischer eingebauter Orchestrator, sondern eine bewusste Kombination aus vorhandenen Claude-Code-Primitiven (Worktree-Isolation, Hooks, ein schlanker Koordinationsprozess).
+This is not a magical built-in orchestrator, but a deliberate combination of existing Claude Code primitives (worktree isolation, hooks, a lean coordination process).
 
-## 12. Selbstqualifizierung des Systems
+## 12. Self-qualification of the system
 
-Damit CUSTOS nicht nur behauptet, gut zu sein, sondern es auch für sich selbst beweist:
+So that CUSTOS not only claims to be good but also proves it for itself:
 
-- **Referenz-Codebases**: Ein Satz realer, unterschiedlich großer Projekte dient als Regressionstestbett. Jede neue CUSTOS-Version läuft testweise gegen diese Projekte (mehrstündiger Lauf), bevor sie freigegeben wird.
-- **Session-Log**: Nach jeder Session entsteht ein zentrales Log, das auswertet, ob CUSTOS selbst Fehler gemacht oder sich verbessert hat – Grundlage für tägliche/wöchentliche Releases.
-- **Metriken**: Fehlerquote pro Release, Anteil erkannter vs. übersehener Regressionen, Zeit bis zum ersten validen Beweis pro Aufgabe.
+- **Reference codebases**: a set of real, differently sized projects serves as a regression test bed. Every new CUSTOS version runs test-wise against these projects (a multi-hour run) before it is released.
+- **Session log**: after every session a central log is created that evaluates whether CUSTOS itself made mistakes or improved – the basis for daily/weekly releases.
+- **Metrics**: error rate per release, share of detected vs. missed regressions, time to the first valid proof per task.
 
-## 13. Effort-Management
+## 13. Effort management
 
-Nicht jedes Modul braucht die gleiche Denktiefe. Vorschlag zur Modell-/Effort-Zuordnung über das `model`-Feld der jeweiligen Subagent-Datei:
+Not every module needs the same depth of thought. Proposal for model/effort assignment via the `model` field of the respective subagent file:
 
-| Modul | Effort |
+| Module | Effort |
 |---|---|
-| Root-Cause-Agent (Debug) | Hoch |
-| Plan-Reviewer | Hoch |
-| Council-Chair | Hoch |
-| Senior Developer (Triage) | Standard |
-| Scope-Guard, Statik-Wrapper | Niedrig/Standard |
-| Plain-Text-Translator | Niedrig |
+| Root-Cause Agent (debug) | High |
+| Plan Reviewer | High |
+| Council Chair | High |
+| Senior Developer (triage) | Standard |
+| Scope Guard, static wrapper | Low/Standard |
+| Plain-Text Translator | Low |
 
-Das hält die Token-Kosten im Alltagsbetrieb im Rahmen, ohne bei den wirklich schwierigen Entscheidungen (Root Cause, Plan-Freigabe, Council-Entscheid) zu sparen.
+This keeps token costs in everyday operation in check, without saving on the truly difficult decisions (root cause, plan approval, council decision).
 
-## 14. Kompatibilität
+## 14. Compatibility
 
-- **Claude Code**: wie oben, natives Plugin.
-- **Codex**: separate, funktional äquivalente Umsetzung über dessen eigenes Extension-/Konfigurationsformat – gleiche Gate-Logik, andere technische Hülle.
-- **Windows**: Hooks/Detektor-Skripte plattformunabhängig in Python/Node schreiben statt Bash-only, damit keine WSL-Pflicht entsteht.
+- **Claude Code**: as above, a native plugin.
+- **Codex**: a separate, functionally equivalent implementation via its own extension/config format – same gate logic, different technical shell.
+- **Windows**: write hooks/detector scripts platform-independently in Python/Node instead of Bash-only, so that no WSL requirement arises.
 
-## 15. Security- & Pentest-Modul (GitHub, Server, Raspberry Pis, PC)
+## 15. Security & pentest module (GitHub, servers, Raspberry Pis, PC)
 
-Kurzfassung: ja, das lässt sich sauber in CUSTOS integrieren – als eigener **Security-Mode**, der derselben Beweislogik folgt wie der Rest des Systems (kein „ist sicher" als Aussage, sondern ein Scan-Report mit Zeitstempel im selben Befund-Log) und der über den Fleet-Modus (Abschnitt 10) automatisch auf alle registrierten Repos angewendet wird. Eine Grundregel ist dabei nicht verhandelbar, siehe 15.1.
+Short version: yes, this can be cleanly integrated into CUSTOS – as its own **security mode** that follows the same proof logic as the rest of the system (not "is secure" as a statement, but a scan report with a timestamp in the same findings log) and that is applied automatically to all registered repos via fleet mode (section 10). One ground rule is non-negotiable, see 15.1.
 
-### 15.1 Scope-Datei als Voraussetzung für alles Aktive
+### 15.1 Scope file as a prerequisite for everything active
 
-Bevor irgendein aktiver Scan läuft, braucht CUSTOS eine feste **Asset-Allowlist** (`custos/scope.yaml`) mit genau den IPs/Hostnamen/Repos, die geprüft werden dürfen – dieselbe Liste, die auch der Fleet-Modus für die Repo-Freigabe nutzt. Jeder aktive Check (Portscan, Web-Scan) validiert vorher gegen diese Liste und bricht sonst ab. Grund: Auch im eigenen Heimnetz landen ohne diese Schranke schnell fremde Geräte im Scanbereich (Router/IoT-Geräte anderer, Cloud-IPs, bei denen der Provider eine vorherige Ankündigung aktiver Scans verlangt) – das ist der Unterschied zwischen „eigene Systeme härten" und einem echten Zwischenfall.
+Before any active scan runs, CUSTOS needs a fixed **asset allowlist** (`custos/scope.yaml`) with exactly the IPs/hostnames/repos that may be checked – the same list that fleet mode uses for repo release. Every active check (port scan, web scan) validates against this list first and otherwise aborts. Reason: even in your own home network, without this barrier, foreign devices quickly end up in the scan range (others' routers/IoT devices, cloud IPs where the provider requires prior notice of active scans) – that is the difference between "hardening your own systems" and a real incident.
 
-### 15.2 GitHub-Hygiene
+### 15.2 GitHub hygiene
 
-| Prüfung | Werkzeug |
+| Check | Tool |
 |---|---|
-| Secrets in Commits/Historie | gitleaks oder trufflehog, zusätzlich GitHub Secret Scanning + Push Protection aktivieren |
-| Abhängigkeits-Schwachstellen | Dependabot / OSV-Scanner |
-| Code-Schwachstellen (SAST) | CodeQL oder Semgrep |
-| Branch-Schutz, Repo-Sichtbarkeit, Mitgliederrechte | Abfrage über die GitHub-API (`gh` CLI) gegen eine Soll-Konfiguration |
+| Secrets in commits/history | gitleaks or trufflehog, additionally enable GitHub secret scanning + push protection |
+| Dependency vulnerabilities | Dependabot / OSV scanner |
+| Code vulnerabilities (SAST) | CodeQL or Semgrep |
+| Branch protection, repo visibility, member rights | Query via the GitHub API (`gh` CLI) against a target configuration |
 
-Für den Claude-Code-eigenen Teil davon gibt es bereits ein fertiges Plugin im Katalog, das direkt zu CUSTOS passt: **„Security Guidance"** – prüft jede Code-Änderung automatisch per Hook (u. a. `PostToolUse`, `Stop`) auf Injection, XSS, SSRF, hartcodierte Secrets und über 20 weitere Schwachstellenklassen. Das lässt sich als zusätzliche Komponente einbinden, statt diesen Teil komplett selbst zu bauen.
+For the Claude-Code-specific part of this, there is already a finished plugin in the catalog that fits CUSTOS directly: **"Security Guidance"** – automatically checks every code change via hook (incl. `PostToolUse`, `Stop`) for injection, XSS, SSRF, hardcoded secrets, and more than 20 other vulnerability classes. This can be included as an additional component instead of building this part entirely yourself.
 
-### 15.3 Server, Raspberry Pis, PC – passive Härtung (unkritisch, beliebig oft automatisierbar)
+### 15.3 Servers, Raspberry Pis, PC – passive hardening (uncritical, arbitrarily automatable)
 
-| Prüfung | Werkzeug/Ansatz |
+| Check | Tool/approach |
 |---|---|
-| Hardening-Score, Fehlkonfigurationen | Lynis |
-| Rootkits/bekannte Malware-Signaturen | rkhunter, chkrootkit |
-| Offene Dienste, unnötig laufende Prozesse | `systemctl list-units`, `ss -tulpn` |
-| SSH-Konfiguration (Passwort-Login deaktiviert? Key-only? Fail2ban aktiv?) | Abgleich gegen Soll-Werte |
-| Firewall-Regeln | ufw/iptables-Abgleich |
-| Patch-Stand | unattended-upgrades-Status, `apt list --upgradable` |
-| Windows-PC | Defender-Status, `netstat`, Autostart-Einträge, `winget upgrade --all` als Trockenlauf |
+| Hardening score, misconfigurations | Lynis |
+| Rootkits/known malware signatures | rkhunter, chkrootkit |
+| Open services, unnecessarily running processes | `systemctl list-units`, `ss -tulpn` |
+| SSH configuration (password login disabled? key-only? Fail2ban active?) | Comparison against target values |
+| Firewall rules | ufw/iptables comparison |
+| Patch level | unattended-upgrades status, `apt list --upgradable` |
+| Windows PC | Defender status, `netstat`, autostart entries, `winget upgrade --all` as a dry run |
 
-Das läuft komplett lokal und ist reine Beobachtung, kein Angriff – lässt sich bedenkenlos regelmäßig automatisieren, z. B. über `monitors/monitors.json` oder einen Cronjob auf jedem Pi/Server, der sein Ergebnis in dasselbe Log-/Befund-System schreibt wie die Code-Checks.
+This runs entirely locally and is pure observation, not an attack – it can be automated regularly without concern, e.g. via `monitors/monitors.json` or a cron job on each Pi/server that writes its result into the same log/findings system as the code checks.
 
-### 15.4 Aktive Prüfung von außen – nur innerhalb der Scope-Liste
+### 15.4 Active checking from outside – only within the scope list
 
-| Prüfung | Werkzeug |
+| Check | Tool |
 |---|---|
-| Welche Ports sind tatsächlich von außen erreichbar | Nmap gegen die eigenen, gelisteten IPs |
-| Typische Web-Schwachstellen eigener Dienste | OWASP ZAP oder Nikto |
-| DAST gegen eigene Webanwendungen mit priorisierten Fix-Vorschlägen | Auch hierfür gibt es bereits ein passendes Plugin im Katalog: **StackHawk HawkScan** – erzeugt automatisch eine Scan-Konfiguration, führt den Scan aus und wandelt Funde direkt in priorisierte Aufgaben für den Coding-Agenten um |
+| Which ports are actually reachable from outside | Nmap against your own, listed IPs |
+| Typical web vulnerabilities of your own services | OWASP ZAP or Nikto |
+| DAST against your own web applications with prioritized fix suggestions | For this too there is already a fitting plugin in the catalog: **StackHawk HawkScan** – automatically generates a scan configuration, runs the scan, and turns findings directly into prioritized tasks for the coding agent |
 
-Zwei Punkte vorher klären: Manche Cloud-Provider (Hetzner, AWS, Azure, …) verlangen bei aktiven Scans eine vorherige Ankündigung, auch gegen die eigenen Instanzen. Und ein Raspberry Pi mit wenig Leistung kann durch einen zu aggressiven Scan tatsächlich in die Knie gehen – deshalb ein definiertes Wartungsfenster und ein „safe mode" (moderate Scan-Intensität, kein Brute-Forcing) statt Dauerbetrieb.
+Two points to clarify beforehand: some cloud providers (Hetzner, AWS, Azure, …) require prior notice for active scans, even against your own instances. And a low-powered Raspberry Pi can actually buckle under a too-aggressive scan – hence a defined maintenance window and a "safe mode" (moderate scan intensity, no brute-forcing) instead of continuous operation.
 
-## 16. Zero-Tolerance-Policy: wie strikt „0 Schwachstellen" durchsetzbar ist
+## 16. Zero-tolerance policy: how strictly "0 vulnerabilities" is enforceable
 
-Ehrliche Einordnung zuerst: **„0 bekannte, von den eingesetzten Prüfungen erkennbare Schwachstellen"** ist technisch durchsetzbar und genau das Ziel dieses Abschnitts. **„0 Schwachstellen überhaupt"** kann kein System versprechen – ein Zero-Day ist per Definition eine Lücke, die noch niemand kennt, und kein Scanner findet, was noch nicht als Muster/CVE/Signatur existiert. CUSTOS sollte deshalb das erste, ehrliche Ziel konsequent durchsetzen, statt das zweite, unhaltbare zu behaupten.
+An honest framing first: **"0 known vulnerabilities detectable by the deployed checks"** is technically enforceable and exactly the goal of this section. **"0 vulnerabilities at all"** cannot be promised by any system – a zero-day is by definition a gap no one knows yet, and no scanner finds what does not yet exist as a pattern/CVE/signature. CUSTOS should therefore consistently enforce the first, honest goal instead of claiming the second, untenable one.
 
-Damit das erste Ziel nicht zur Lippenbekenntnis wird, sondern tatsächlich greift:
+So that the first goal does not become lip service but actually takes effect:
 
-| Stellschraube | Ohne Zero-Tolerance (Standard) | Mit Zero-Tolerance |
+| Lever | Without zero-tolerance (default) | With zero-tolerance |
 |---|---|---|
-| Schwellwert der Gates | Blockt erst ab „hoch"/„kritisch" | Blockt ab jedem Fund, auch „niedrig"/„info" |
-| Verhalten bei Fund | Warnung, Arbeit geht weiter | Fail-closed: Exit 2, Session/Deploy stoppt |
-| Scanner-Anzahl je Kategorie | Ein Tool pro Kategorie | Mehrere unabhängige Tools parallel (jedes Tool hat eigene blinde Flecken – Defense in Depth) |
-| Rescan-Auslöser | Nur bei Code-Änderung | Zusätzlich zeitgesteuert (z. B. täglich), weil für bereits gemergten Code laufend neue CVEs bekannt werden |
-| Ausnahmen/Suppressions | Können vom Modell selbst gesetzt werden | Nur über den Code-Council (Abschnitt 6), mit Begründung und Ablaufdatum – nie eine stille Selbst-Freigabe |
-| Bestandscode | „War schon immer so" wird akzeptiert | Neue Funde in Altcode zählen genauso wie in neuem Code, kein Bestandsschutz |
+| Gate threshold | Blocks only from "high"/"critical" | Blocks from any finding, including "low"/"info" |
+| Behavior on finding | Warning, work continues | Fail-closed: exit 2, session/deploy stops |
+| Number of scanners per category | One tool per category | Several independent tools in parallel (each tool has its own blind spots – defense in depth) |
+| Rescan trigger | Only on code change | Additionally time-triggered (e.g. daily), because new CVEs become known for already-merged code over time |
+| Exceptions/suppressions | Can be set by the model itself | Only via the code council (section 6), with a rationale and an expiry date – never a silent self-approval |
+| Existing code | "It's always been this way" is accepted | New findings in old code count just like in new code, no grandfathering |
 
-Der Preis dafür ist mehr Reibung: Builds brechen auch bei kleinen Funden, und mehr Fälle landen beim Council statt automatisch durchzulaufen. Das ist der bewusste Trade-off, der aus einem „meistens sauber"-System ein „so blank wie technisch möglich"-System macht.
+The price for this is more friction: builds break even on small findings, and more cases land at the council instead of passing automatically. That is the deliberate trade-off that turns a "mostly clean" system into an "as bare as technically possible" system.
 
-## 17. GitHub-Veröffentlichung: Repo-Setup
+## 17. GitHub publication: repo setup
 
-Damit das Repo von Anfang an seriös wirkt und nicht wie ein halbfertiger Side-Hack:
+So that the repo looks serious from the start and not like a half-finished side hack:
 
-- **Repo-Name:** `custos` unter der neu anzulegenden `renker-industries`-Org (Abschnitt 3), nicht unter dem privaten Account. **Entschieden.**
-- **README-Grundgerüst:** Ein-Satz-Pitch oben (Abschnitt 2), darunter kurz „Was es tut" (die vier Ebenen aus Abschnitt 4 als knappe Liste), Installationsschritt, ein Screenshot/GIF des Interfaces (Abschnitt 18), Lizenzabschnitt.
-- **Badges:** Build-Status (eigene CI, die die CUSTOS-Gates auf sich selbst anwendet – Dogfooding), MIT-Lizenz-Badge, optional „0 offene Funde"-Badge, der sich aus dem letzten `custos_findings.json` speist statt einer Behauptung.
-- **Lizenz: MIT.** **Entschieden** – maximal offen, einfachste Wahl für Sichtbarkeit/Reputation. Der `LICENSE`-Platzhalter im Repo wird durch den Standard-MIT-Text ersetzt (Copyright-Zeile: Jahr + Renker Industries bzw. Autorenname).
-- **CI-Dogfooding:** Ein GitHub-Actions-Workflow, der bei jedem Push dieselben Gates laufen lässt, die CUSTOS auch für fremde Projekte durchsetzt – die beste Werbung ist ein Repo, das die eigenen Regeln sichtbar einhält.
-- **.github/-Ordner:** Issue-Templates, ggf. CONTRIBUTING.md, falls die Community-Idee aus dem Vorbild-Video später doch aufgegriffen werden soll (optional, nicht Teil des MVP).
+- **Repo name:** `custos` under the newly created `renker-industries` org (section 3), not under the private account. **Decided.**
+- **README skeleton:** the one-sentence pitch at the top (section 2), below it a brief "What it does" (the four levels from section 4 as a concise list), an installation step, a screenshot/GIF of the interface (section 18), a license section.
+- **Badges:** build status (own CI that applies the CUSTOS gates to itself – dogfooding), MIT license badge, optionally a "0 open findings" badge fed from the latest `custos_findings.json` instead of a claim.
+- **License: MIT.** **Decided** – maximally open, the simplest choice for visibility/reputation. The `LICENSE` placeholder in the repo is replaced by the standard MIT text (copyright line: year + Renker Industries or the author's name).
+- **CI dogfooding:** a GitHub Actions workflow that on every push runs the same gates CUSTOS enforces for other projects – the best advertising is a repo that visibly follows its own rules.
+- **.github/ folder:** issue templates, possibly CONTRIBUTING.md, if the community idea from the model video is picked up later after all (optional, not part of the MVP).
 
 ## 18. Interface
 
-Festgelegter Stil: dunkles Terminal-Dashboard (Farben/Typografie siehe Abschnitt 2). Kernansichten:
+Fixed style: a dark terminal dashboard (colors/typography see section 2). Core views:
 
-1. **Übersicht/Fleet-Dashboard**: Liste aller überwachten Repos (Abschnitt 10) mit Status-Ampel, letztem Scan-Zeitpunkt, Anzahl offener Funde.
-2. **Repo-Detail**: Gates im Detail (Abschnitt 8) als Zeilen mit Status, Klick öffnet den zugehörigen Beleg (Testoutput/Linter-Log).
-3. **Security-Log**: chronologische Liste aller Security-Scans (Abschnitt 15) mit Schweregrad-Filter.
-4. **Council-Fälle**: offene bzw. entschiedene Streitfälle zwischen Statik-Analyse und Modell-Einschätzung, inkl. Begründung des Chair-Agents.
+1. **Overview/fleet dashboard**: a list of all monitored repos (section 10) with a status light, last scan time, number of open findings.
+2. **Repo detail**: the gates in detail (section 8) as rows with status; a click opens the associated proof (test output/linter log).
+3. **Security log**: a chronological list of all security scans (section 15) with a severity filter.
+4. **Council cases**: open or decided disputes between static analysis and the model assessment, incl. the chair agent's rationale.
 
-**Design-Referenz:** [CUSTOS Dashboard](https://claude.ai/design/p/e5676802-f116-4b7a-bd09-06dc8c891cc8?file=CUSTOS+Dashboard.dc.html&via=share) – professionell in Claude Design ausgearbeitete Fassung der vier Ansichten, verbindliche Grundlage für die spätere Interface-Umsetzung (Roadmap-Phase 10, Abschnitt 19).
+**Design reference:** [CUSTOS Dashboard](https://claude.ai/design/p/e5676802-f116-4b7a-bd09-06dc8c891cc8?file=CUSTOS+Dashboard.dc.html&via=share) – a professionally worked-out version of the four views in Claude Design, the binding basis for the later interface implementation (roadmap phase 10, section 19).
 
-## 19. Umsetzungs-Roadmap
+## 19. Implementation roadmap
 
-1. **MVP**: Senior-Dev-Default-Agent + Plan-Reviewer + ein `Stop`-Hook, der einen Testlauf erzwingt. Damit ist die Kernaussage ("Beweis statt Behauptung") bereits spürbar.
-2. **Statik-Ebene**: AI-Slop-Detektor + sprachspezifische Linter/Typecheck-Hooks ergänzen.
-3. **Branding & Repo-Grundgerüst**: `renker-industries/custos` anlegen, README/Lizenz/CI-Dogfooding (Abschnitt 17) – bevor mehr Funktionsumfang dazukommt, damit das Repo von Anfang an in gutem Zustand ist.
-4. **Spezialmodi**: Debug-Mode mit Root-Cause-Agent, Data-Analytics-Mode.
-5. **Fleet-Modus**: Repo-Discovery lokal + GitHub, zunächst read-only (Abschnitt 10.1–10.2).
-6. **Security-Mode**: Scope-Datei + passive Härtungs-Checks zuerst (unkritisch), aktive Scans erst danach und nur gegen die Scope-Liste.
-7. **Fleet-Bearbeitung**: Auto-Fix-PRs für freigegebene Repos (Abschnitt 10.3).
-8. **Council**: Fünf-Advisor-Mechanismus für strittige Fälle.
-9. **Multi-Session**: Worktree-Isolation + Task-Queue-Koordination.
-10. **Interface**: Dashboard aus Abschnitt 18 als eigenständige Anwendung, gespeist aus den `custos_findings.json`-Reports.
-11. **Selbstqualifizierung**: Referenz-Testsuite, Session-Logs, Release-Metriken.
+1. **MVP**: senior-dev default agent + plan reviewer + a `Stop` hook that enforces a test run. With this, the core statement ("proof instead of claim") is already tangible.
+2. **Static level**: add the AI-slop detector + language-specific linter/typecheck hooks.
+3. **Branding & repo skeleton**: create `renker-industries/custos`, README/license/CI dogfooding (section 17) – before more functionality is added, so that the repo is in good shape from the start.
+4. **Special modes**: debug mode with the root-cause agent, data-analytics mode.
+5. **Fleet mode**: repo discovery locally + GitHub, initially read-only (section 10.1–10.2).
+6. **Security mode**: scope file + passive hardening checks first (uncritical), active scans only afterwards and only against the scope list.
+7. **Fleet editing**: auto-fix PRs for released repos (section 10.3).
+8. **Council**: the five-advisor mechanism for disputed cases.
+9. **Multi-session**: worktree isolation + task-queue coordination.
+10. **Interface**: the dashboard from section 18 as a standalone application, fed from the `custos_findings.json` reports.
+11. **Self-qualification**: reference test suite, session logs, release metrics.
 
-## 20. Offene Punkte
+## 20. Open points
 
-Entschieden (15.09.2026): Lizenz = MIT (Abschnitt 17), GitHub-Org `renker-industries` wird neu angelegt (Abschnitt 3), Fleet-Modus startet mit **nur `custos` selbst** als „aktiv überwacht" (Abschnitt 10.2) – alle anderen Repos bleiben erstmal nur inventarisiert, bis einzeln freigegeben.
+Decided (2026-09-15): license = MIT (section 17), the GitHub org `renker-industries` is created new (section 3), fleet mode starts with **only `custos` itself** as "actively monitored" (section 10.2) – all other repos remain inventoried only for now, until released individually.
 
-Entschieden (15.09.2026): Fleet-Discovery durchsucht `CascadeProjects` und `Documents` als Wurzelverzeichnisse (Abschnitt 10.1).
+Decided (2026-09-15): fleet discovery searches `CascadeProjects` and `Documents` as root directories (section 10.1).
 
-Noch offen:
+Still open:
 
-- `scope.yaml` bleibt bewusst leer (kein aktiver Scan), bis echte Hosts/IPs eingetragen werden – keine Deadline dafür.
-- Wann und welches zweite Repo (vermutlich RenkerNet oder RENCORA/LOKARA) wird als nächstes für den Fleet-Modus freigegeben?
-- Wie groß soll die Referenz-Testsuite für Regressionsläufe initial sein, und aus welchen eigenen Projekten wird sie gespeist?
-- Soll der Task-Queue-Mechanismus über eine Datei im Repo oder einen lokalen MCP-Server laufen?
-- Welche IPs/Hostnamen/Repos gehören konkret in die Scope-Datei (Abschnitt 15.1), bevor irgendein aktiver Scan aktiviert wird?
+- `scope.yaml` deliberately stays empty (no active scan) until real hosts/IPs are entered – no deadline for it.
+- When and which second repo (presumably RenkerNet or RENCORA/LOKARA) is released next for fleet mode?
+- How large should the reference test suite for regression runs be initially, and from which of your own projects is it fed?
+- Should the task-queue mechanism run via a file in the repo or a local MCP server?
+- Which IPs/hostnames/repos concretely belong in the scope file (section 15.1) before any active scan is enabled?
 
 ---
 
-*Hinweis zu den technischen Angaben:* Die Zuordnung auf Hook-Events, Skill-/Agent-Format und Plugin-Struktur basiert auf der aktuellen Claude-Code-Dokumentation (Stand September 2026, code.claude.com/docs). Vor dem Bau lohnt sich ein kurzer Abgleich mit `/docs/en/hooks`, `/docs/en/plugins` und `/docs/en/permissions`, da sich Feldnamen bei neueren Versionen ändern können.
+*Note on the technical details:* The mapping to hook events, skill/agent format, and plugin structure is based on the current Claude Code documentation (as of September 2026, code.claude.com/docs). Before building, a brief comparison with `/docs/en/hooks`, `/docs/en/plugins`, and `/docs/en/permissions` is worthwhile, since field names can change in newer versions.

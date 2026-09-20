@@ -12,21 +12,21 @@ description: >-
 Bug fixing under CUSTOS follows one rule: **reproduce before you theorize, prove
 before you claim fixed.**
 
-## Ablauf
+## Flow
 
-1. **Reproduzieren.** Turn the report into a concrete failing command/input and
+1. **Reproduce.** Turn the report into a concrete failing command/input and
    capture the exact error. If it cannot be reproduced, that is the first thing
    to resolve — do not patch a bug you cannot trigger.
-2. **Root-Cause-Agent.** Delegate to the `root-cause` agent. It does not stop at
+2. **Root-cause agent.** Delegate to the `root-cause` agent. It does not stop at
    the first plausible cause; it forces at least one alternative hypothesis and
    backs the chosen cause with evidence.
-3. **Minimaler Fix.** Apply the smallest change that removes the proven cause.
-   No opportunistic refactors in a bug fix (that is scope drift → separate task).
-4. **Beweis.** Re-run the original repro (must pass) and the existing tests (must
+3. **Minimal fix.** Apply the smallest change that removes the proven cause.
+   No opportunistic refactors in a bug fix (that is scope drift → a separate task).
+4. **Proof.** Re-run the original repro (must pass) and the existing tests (must
    stay green). The CUSTOS `Stop` proof gate independently demands this.
 
-## Anti-Pattern (blockiert)
+## Anti-patterns (blocked)
 
-- "Vermutlich lag es an X" ohne Repro und ohne Beleg.
-- Fix ohne erneuten Lauf der ursprünglichen Repro.
-- Symptom kaschieren (Fehler abfangen/unterdrücken), statt Ursache beheben.
+- "It was probably X" without a repro and without evidence.
+- A fix without a re-run of the original repro.
+- Masking the symptom (catching/suppressing the error) instead of fixing the cause.

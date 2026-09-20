@@ -12,7 +12,7 @@ description: >-
 Security follows the same rule as the rest of CUSTOS: never the sentence "it is
 secure", always a scan report with a timestamp in the same findings log.
 
-## Passive Härtung (unkritisch, jederzeit)
+## Passive hardening (uncritical, any time)
 
 ```bash
 python bin/security_passive.py          # human-readable summary
@@ -27,16 +27,16 @@ python bin/security_passive.py --json   # full report to stdout
 - Safe to schedule (cron / monitors) — writes into the same `custos_findings.json`
   as the code gates.
 
-## Scope-Datei (`custos/scope.yaml`) — Voraussetzung für alles Aktive
+## Scope file (`custos/scope.yaml`) — a precondition for anything active
 
-- `scope.yaml` is the **asset allowlist**. Any active scan (later phase) must
+- `scope.yaml` is the **asset allowlist**. Any active scan (a later phase) must
   validate its target against it and abort if the target is not listed.
 - Seeded **empty** on purpose: empty = no active scan may run.
-- ENTSCHEIDUNG NOETIG: add only hosts/IPs/repos you own and are permitted to
+- DECISION NEEDED: add only hosts/IPs/repos you own and are permitted to
   scan; some providers require prior notice even for your own instances.
 
-## Nicht in dieser Phase
+## Not in this stage
 
-- Aktive Scans (nmap, OWASP ZAP, Nikto — section 15.4): require a populated,
+- Active scans (nmap, OWASP ZAP, Nikto — section 15.4): require a populated,
   human-approved `scope.yaml` and a defined maintenance window / safe mode. Not
   built yet.

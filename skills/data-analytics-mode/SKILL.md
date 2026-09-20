@@ -14,33 +14,33 @@ The proof rule for code applies to numbers too: **no claim about data without a
 shown computation and an independent cross-check.** A number that agrees with
 itself once is not a proof.
 
-## Beweispflicht für Zahlen
+## Proof obligation for numbers
 
 Before stating any value or trend:
 
-1. **Herkunft zeigen.** Which source/table/query produced it? State the exact
+1. **Show the origin.** Which source/table/query produced it? State the exact
    query or computation, not a paraphrase.
-2. **Berechnung offenlegen.** How is the value derived (filter, join,
+2. **Disclose the computation.** How is the value derived (filter, join,
    aggregation, unit, time window)? Name each step that could change the result.
-3. **Zweiter Blickwinkel.** Recompute the same value a different way and show it
+3. **A second angle.** Recompute the same value a different way and show it
    matches:
    - a different aggregation path (sum of parts vs. total),
    - a different grain (per-day summed vs. period total),
    - a sanity bound (order of magnitude, non-negativity, row counts),
    - a spot check against a few raw records.
-4. **Abweichung = Fund.** If the two angles disagree, that is a finding to
+4. **A deviation = a finding.** If the two angles disagree, that is a finding to
    resolve, not a rounding note to wave away. Do not report the number until it
    reconciles or the discrepancy is explained.
 
-## Typische stille Fehler (aktiv prüfen)
+## Typical silent errors (check actively)
 
-- Doppelte Zeilen durch fan-out joins → aufgeblähte Summen.
-- Zeitzone / Datumsgrenze verschiebt Tages-/Monatswerte.
-- NULL vs. 0 in Durchschnitten und Zählungen.
-- Einheiten/Währung/Skalierung gemischt.
-- Filter, der stillschweigend Zeilen entfernt (INNER statt LEFT join).
+- Duplicate rows from fan-out joins → inflated sums.
+- Timezone / date boundary shifts daily/monthly values.
+- NULL vs. 0 in averages and counts.
+- Units/currency/scaling mixed.
+- A filter that silently removes rows (INNER instead of LEFT join).
 
-## Ausgabe
+## Output
 
-Jede Kennzahl mit: Wert · Berechnung/Query · Gegenprobe (zweiter Weg) · Ergebnis
-der Gegenprobe (stimmt / Abweichung).
+Every metric with: value · computation/query · cross-check (a second way) · result
+of the cross-check (matches / deviation).

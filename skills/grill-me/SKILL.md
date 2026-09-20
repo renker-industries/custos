@@ -11,24 +11,24 @@ description: >-
 Before a plan is worth writing, the requirements have to be pinned down. This step
 interrogates the task and refuses to plan on assumptions.
 
-## Vorgehen
+## Procedure
 
 Ask only the questions whose answers would actually change the plan. Skip anything
 you can safely infer. Group them so the user can answer in one pass.
 
-## Fragen-Raster
+## Question grid
 
-- **Ziel:** Was ist das konkrete, beobachtbare Ergebnis? Woran erkennt man „fertig"?
-- **Scope-Grenzen:** Was gehört ausdrücklich NICHT dazu?
-- **Constraints:** Bestehende Systeme, Versionen, Plattform (Windows vs. POSIX),
-  Datenbank, APIs, die nicht gebrochen werden dürfen?
-- **Daten/Sicherheit:** Werden echte Nutzerdaten, Secrets, Zahlungen, externe
-  Empfänger berührt? (Falls ja → Sonderbehandlung, nichts autonom.)
-- **Beweis:** Welcher Test/Check gilt als gültiger Beleg für Erfolg?
-- **Risiko/Umkehrbarkeit:** Ist etwas irreversibel (Migration, Deploy, Löschung)?
+- **Goal:** What is the concrete, observable result? How do you recognize "done"?
+- **Scope boundaries:** What is explicitly NOT part of it?
+- **Constraints:** Existing systems, versions, platform (Windows vs. POSIX),
+  database, APIs that must not be broken?
+- **Data/security:** Are real user data, secrets, payments, external
+  recipients touched? (If yes → special handling, nothing autonomous.)
+- **Proof:** Which test/check counts as valid evidence of success?
+- **Risk/reversibility:** Is anything irreversible (migration, deploy, deletion)?
 
-## Danach
+## Afterwards
 
-Erst wenn die planungsrelevanten Antworten vorliegen (oder bewusst als Annahme
-markiert sind), in `plan-mode` übergehen. Für Nicht-Entwickler die Fragen ggf.
-über den `plain-text-translator` vereinfachen.
+Only once the plan-relevant answers are in (or deliberately marked as an assumption)
+move on to `plan-mode`. For non-developers, simplify the questions if needed
+via the `plain-text-translator`.
