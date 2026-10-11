@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Selfproof pre-commit: fast language check.
+set -e
+if command -v selfproof >/dev/null 2>&1; then SP=selfproof; else SP="python -m selfproof.cli"; fi
+$SP build --gates language

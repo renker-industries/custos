@@ -24,8 +24,8 @@ def main() -> int:
     try:
         if not sys.stdin.isatty():
             sys.stdin.read()
-    except Exception:
-        pass
+    except (OSError, ValueError):
+        pass  # unreadable stdin must never block the prompt
     out = {
         "hookSpecificOutput": {
             "hookEventName": "UserPromptSubmit",

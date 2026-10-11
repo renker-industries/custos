@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Selfproof commit-msg: require a Built-by trailer (honest self-built metric).
+set -e
+if ! grep -qiE '^Built-by:[[:space:]]*(human|agent[[:space:]]+.+)$' "$1"; then
+  echo "commit-msg: add 'Built-by: human' or 'Built-by: agent <name> <version>'." >&2
+  exit 1
+fi
