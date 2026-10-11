@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CUSTOS — Proof gates for AI coding agents</title>
+<meta name="description" content="Claude Code plugin that forces every “done / correct / secure” claim to be backed by an executed check (tests, linters, static analysis) before a session may end. MIT.">
+<meta name="keywords" content="Claude Code plugin, AI coding agent, guardrails, proof gate, prompt injection, code quality, developer tools, Python">
+<link rel="canonical" href="https://renker-industries.github.io/custos/">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="website"><meta property="og:title" content="CUSTOS">
+<meta property="og:description" content="Proof-based guardrails for AI coding agents: no green check, no “done”."><meta property="og:url" content="https://renker-industries.github.io/custos/">
+<meta property="og:image" content="https://renker-industries.github.io/custos/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://renker-industries.github.io/custos/og.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareSourceCode", "name": "CUSTOS", "description": "Claude Code plugin that forces every “done / correct / secure” claim to be backed by an executed check (tests, linters, static analysis) before a session may end. MIT.", "codeRepository": "https://github.com/renker-industries/custos", "programmingLanguage": "Python", "url": "https://renker-industries.github.io/custos/", "author": {"@type": "Person", "name": "Sebastian Renker", "url": "https://github.com/sebastianrenker"}, "license": "MIT"}</script>
+<style>
+:root{--bg:#eceef1;--card:#f7f8fa;--ink:#16171a;--ink2:#565961;--rule:#d5d8dd;--acc:#5b47e0;--ok:#0f7a54;--warn:#8f6410}
+@media(prefers-color-scheme:dark){:root{--bg:#161719;--card:#1c1e21;--ink:#e9e9ec;--ink2:#a2a4ab;--rule:#2c2e34;--acc:#8f80ff;--ok:#39c78d;--warn:#d6ad4e}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.w{max-width:960px;margin:0 auto;padding:0 20px}header{border-bottom:1px solid var(--rule)}header .w{display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
+header a{color:var(--ink);text-decoration:none;font-weight:600}nav a{margin-left:18px;font-weight:400;color:var(--ink2)}
+.hero{padding:72px 0 40px}.tag{font:500 13px/1 ui-monospace,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.08;margin:12px 0 16px;letter-spacing:-.02em}.lead{font-size:21px;color:var(--ink2);max-width:60ch}
+.btn{display:inline-block;margin:24px 12px 0 0;padding:12px 20px;border-radius:6px;border:1px solid var(--acc);text-decoration:none;font-weight:600}
+.btn.p{background:var(--acc);color:#fff}.btn.s{color:var(--acc)}h2{font-size:26px;margin:48px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.c{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:18px}
+.c h3{margin:0 0 6px;font-size:18px}.c p{margin:0;color:var(--ink2);font-size:16px}
+.note{border-left:4px solid var(--warn);background:var(--card);padding:14px 18px;border-radius:0 8px 8px 0}.note b{color:var(--warn)}
+footer{border-top:1px solid var(--rule);margin-top:64px;padding:28px 0;color:var(--ink2);font-size:15px}footer a{color:var(--acc)}
+a{color:var(--acc)}:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+</style></head><body>
+<header><div class="w"><a href="" rel="noopener noreferrer">CUSTOS</a><nav><a href="#features">Features</a><a href="#honest">Limits</a><a href="" rel="noopener noreferrer">GitHub</a></nav></div></header>
+<main class="w">
+<section class="hero"><div class="tag">Python · open source</div><h1>Proof-based guardrails for AI coding agents: no green check, no “done”.</h1>
+<p class="lead">An AI coding agent likes to claim that something is finished, correct or secure. CUSTOS makes it prove that with an executed command, not with a sentence in its reply.</p>
+<a href="" rel="noopener noreferrer">View on GitHub</a><a href="" rel="noopener noreferrer">Read the README</a></section>
+<h2 id="features">What it does</h2><div class="grid"><div class="c"><h3>Proof gate</h3><p>A Stop hook forces a test run or linter before a session is allowed to end.</p></div><div class="c"><h3>Mechanical gates</h3><p>Hooks run linters and static tools, an AI-slop detector, an accessibility check and a scope guard, and block on exit code 2.</p></div><div class="c"><h3>Plan approval</h3><p>A plan reviewer must clear a plan before implementation starts.</p></div><div class="c"><h3>Regression guard</h3><p>Blocks a subagent from turning a green check red.</p></div><div class="c"><h3>Evidence record</h3><p>Every finding lands time-stamped in custos_findings.json; zero-tolerance mode is fail-closed.</p></div></div>
+<h2 id="honest">Honest limits</h2><div class="note"><b>Read this first.</b> Active security scans (nmap/ZAP) and fleet auto-fix push are deliberately left as ready-to-arm placeholders. Findings are heuristics, not proof of absence of bugs. Needs Python 3 on the PATH and Claude Code.</div>
+
+</main>
+<footer><div class="w">License: MIT · <a href="" rel="noopener noreferrer">Source</a> · Part of <a href="https://sebastianrenker.github.io/">RENKER</a> by <a href="" rel="noopener noreferrer">Sebastian Renker</a></div></footer>
+</body></html>
