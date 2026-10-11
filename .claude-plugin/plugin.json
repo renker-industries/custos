@@ -1,7 +1,7 @@
 {
   "name": "custos",
   "version": "0.2.0",
-  "description": "CUSTOS ist der Waechter, der jede Behauptung deines KI-Agenten in einen Beweis verwandelt - bevor Code, Repo oder Server sich fertig nennen duerfen.",
+  "description": "CUSTOS is the guardian that turns every claim your AI agent makes into proof, before any code, repo or server may call itself done.",
   "author": {
     "name": "Renker Industries",
     "email": "sebastian.renker3@gmail.com"
