@@ -60,7 +60,12 @@ _WRAPPER = re.compile(
 )
 
 
-def analyse(text: str) -> list[dict]:
+# Markup repeats structural lines by design (closing tags, list items, links);
+# duplicate-line is a code-smell signal and is not applied to these files.
+_MARKUP_EXT = {".html", ".htm", ".xml", ".svg", ".xhtml"}
+
+
+def analyse(text: str, path: str | None = None) -> list[dict]:
     findings: list[dict] = []
     lines = text.splitlines()
     seen_nonblank: dict[str, int] = {}
@@ -79,7 +84,8 @@ def analyse(text: str) -> list[dict]:
             findings.append({"line": i, "kind": "trivial-wrapper", "text": stripped})
 
         # Duplicate non-trivial code line (ignore short lines / pure braces).
-        if len(stripped) >= 12 and not _COMMENT.match(line):
+        if (len(stripped) >= 12 and not _COMMENT.match(line)
+                and not (path and os.path.splitext(path)[1].lower() in _MARKUP_EXT)):
             if stripped in seen_nonblank:
                 findings.append(
                     {
@@ -102,7 +108,7 @@ def main() -> int:
     if not text:
         return 0
 
-    findings = analyse(text)
+    findings = analyse(text, path)
     if not findings:
         cl.record(payload, "ai_slop_detector", [], blocked=False)
         return 0

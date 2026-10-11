@@ -43,6 +43,14 @@ class AiSlopTests(unittest.TestCase):
         p = {"cwd": ".", "tool_input": {"file_path": "d.js", "content": content}}
         self.assertEqual(run(self.S, p).returncode, 2)
 
+    def test_repeated_markup_lines_pass_in_html_but_block_in_code(self):
+        # duplicate-line is a code smell; repeated tags in markup are structural.
+        rows = ('<li><a href="https://example.com/x">link</a></li>' + chr(10)) * 8
+        html = {"cwd": ".", "tool_input": {"file_path": "p.html", "content": rows}}
+        code = {"cwd": ".", "tool_input": {"file_path": "p.js", "content": rows}}
+        self.assertEqual(run(self.S, html).returncode, 0)
+        self.assertEqual(run(self.S, code).returncode, 2)
+
 
 class LintTests(unittest.TestCase):
     S = "detectors/lint_dispatch.py"
