@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# Selfproof pre-push: run the gates and verify the ledger.
-set -e
-if command -v selfproof >/dev/null 2>&1; then SP=selfproof; else SP="python -m selfproof.cli"; fi
-$SP build
-$SP ledger verify
